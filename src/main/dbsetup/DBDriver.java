@@ -2,10 +2,16 @@ package main.dbsetup;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import main.CSCC43DatabaseProject;
 
 /**
  * Establishes the connection to the database
+ * 
  * @author Jeremy Lai
  *
  */
@@ -19,9 +25,14 @@ public class DBDriver {
 	protected static Connection dbConnect() {
 		Connection connection = null;
 		try {
-			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:iCare.db");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost/test", "Kamito", "TarElendil1");
+			System.out.println("Database Connection Success");
 
+		} catch (ClassNotFoundException ex) {
+			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (SQLException ex) {
+			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -29,6 +40,11 @@ public class DBDriver {
 		return connection;
 	}
 
+	/**
+	 *  Legacy code, not needed
+	 * @param connection
+	 * @return
+	 */
 	protected static Connection initialize(Connection connection) {
 		if (!initializeDatabase(connection)) {
 			System.out.println("Error connecting to new DB");
@@ -38,7 +54,7 @@ public class DBDriver {
 
 	/**
 	 * Initialize the db
-	 * 
+	 * legacy code, not needed
 	 * @param connection the connection to which db is connected
 	 * @return true/false depending on db initialization success
 	 */
