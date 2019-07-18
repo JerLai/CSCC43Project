@@ -6,7 +6,7 @@ public class operations {
 
 	public static String query;
 	
-	public static void createProfile(int SIN, String name, String address, String occupation, Date dob) {
+	public static void createProfile(String SIN, String name, String address, String occupation, Date dob) {
 		// This one is for hosts
 		query = "INSERT INTO users(SIN, name, address, occupation, DoB) VALUES(" + SIN+","+ name +","+ address+","+ occupation+","+ dob+");";
 		
@@ -16,7 +16,7 @@ public class operations {
 	}
 	
 	
-	public static void createProfile(int SIN, String name, String address, String occupation, Date dob, int creditCard){
+	public static void createProfile(String SIN, String name, String address, String occupation, Date dob, int creditCard){
 	// This is for renter
 		query = "INSERT INTO users(SIN, name, address, occupation, DoB) VALUES(" + SIN+","+ name +","+ address+","+ occupation+","+ dob+");";
 		
@@ -24,7 +24,7 @@ public class operations {
 		query = "INSERT INTO renter(SIN, creditCard) VALUES("+SIN+","+creditCard+");";
 	}
 	
-	public static void deleteProfile(int SIN, boolean type) {
+	public static void deleteProfile(String SIN, boolean type) {
 		query = "DELETE FROM users WHERE SIN="+SIN+";";
 		
 		if (type) { // host
@@ -38,7 +38,7 @@ public class operations {
 		}
 	}
 	
-	public static void bookListing(String SIN, int listingID, Date start, Date end) {
+	public static void bookListing(String SIN, String listingID, Date start, Date end) {
 		
 		
 		/*
@@ -55,7 +55,7 @@ public class operations {
 		 for (Object a: result) {
 			Date setStart = a.startDate;
 			Date setEnd = a.endDate;
-			int price = a.price;
+			String price = a.price;
 			
 			if (setStart.compareTo(start) < 0 && setEnd.compareTo(end) > 0){
 				// split the time into 2
@@ -130,6 +130,12 @@ public class operations {
 		  }
 		 
 		 */
+	}
+	
+	public static void hostUpdatePrice(String listingID, String SIN, Date start, Date end, String price) {
+		query = "UPDATE calendar SET price="+price+" WHERE (SELECT price FROM calendar listing WHERE hostSIN="+SIN+", startDate="+start+", endDate="+end+");";
+	
+		
 	}
 
 }
