@@ -17,7 +17,7 @@ public class CSCC43DatabaseProject {
 	void createConnection() throws SQLException{
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con  = DriverManager.getConnection("jdbc:mysql://localhost/test", "Kamito", "TarElendil1");
+			Connection con  = DriverManager.getConnection("jdbc:mysql://localhost/air_bnb", "root", "root");
 			System.out.println("Database Connection Success");
 		} catch (ClassNotFoundException ex) {
 			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);
