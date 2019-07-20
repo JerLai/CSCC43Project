@@ -48,14 +48,19 @@ public class operations {
 		 	 * return;
 		 }
 		 */
+		
 		query = "SELECT startDate, endDate FROM calendar WHERE listingID="+listingID+";";
 		
+		
+		
+		
+		
 		/*
-		 ArrayList<Object> result = query.execute()// or something like this
-		 for (Object a: result) {
-			Date setStart = a.startDate;
-			Date setEnd = a.endDate;
-			String price = a.price;
+		 ArrayList<HashMap<String, String>> result = queries.processResult(query.execute())// or something like this
+		 for (HashMap a: result) {
+			Date setStart = new Date(a.get(startDate));
+			Date setEnd = new Date(a.get(endDate));
+			String price = a.get(price);
 			
 			if (setStart.compareTo(start) < 0 && setEnd.compareTo(end) > 0){
 				// split the time into 2
@@ -65,12 +70,18 @@ public class operations {
 				query = "UPDATE calendar SET endDate=start WHERE startDate="+setDate+ "AND listingID="+listingID+";";
 				
 				query = INSERT INTO calendar(listingID, startDate, endDate, price) VALUES("+listingID+","+end+","+setEnd+","+price+");";
-					
+				
+				query = "INSERT INTO history(hostSIN, renterSIN, listingID, startDate, endDate) VALUES ("+a.get("hostSIN")+", "+SIN+", "+ listingID + ", "startDate.toString() + ", " +endDate)"
+				break;
 			}
 			else if (setStart.compareTo(start) == 0 && setEnd.compareTo(end) == 0){
 				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate) VALUES("+listingID+","+SIN+","+start+","+end+");";
 				
 				query = "DELETE FROM calendar WHERE listingID="+listingID+"AND startDate="+setStart+";";
+				
+				
+				query = "INSERT INTO history(hostSIN, renterSIN, listingID, startDate, endDate) VALUES ("+a.get("hostSIN")+", "+SIN+", "+ listingID + ", "startDate.toString() + ", " +endDate)"
+				break;
 			}
 			else if (setStart.compareTo(start) <= 0 && setEnd.compareTo(end) >= 0){
 				// session starts at the beginning
@@ -79,6 +90,9 @@ public class operations {
 				
 				query = "UPDATE calendar SET endDate=end,startDate=start WHERE startDate="+setDate+ "AND listingID="+listingID+";";
 				
+				
+				query = "INSERT INTO history(hostSIN, renterSIN, listingID, startDate, endDate) VALUES ("+a.get("hostSIN")+", "+SIN+", "+ listingID + ", "startDate.toString() + ", " +endDate)"
+				break;
 			}
 			else{
 			// date is not within range of this entry
@@ -102,10 +116,10 @@ public class operations {
 		
 		/*
 		 
-		  ArrayList<Object> result = query.execute()
-		  for (Object a: result){
-		  	Date setStart = a.startDate;
-		  	Date setEnd = a.endDate;
+		  ArrayList<HashMap<String, String>> result = queries.processResult(query.execute());
+		  for (HashMap a: result){
+		  	Date setStart = new Date(a.get(startDate));
+		  	Date setEnd = new Date(a.get(endDate));
 		  	
 		  	Calendar calendar = Calendar.getInstance();
 		  	calendar.setTime(setStart);
@@ -135,6 +149,10 @@ public class operations {
 	public static void hostUpdatePrice(String listingID, String SIN, Date start, Date end, String price) {
 		query = "UPDATE calendar SET price="+price+" WHERE (SELECT price FROM calendar listing WHERE hostSIN="+SIN+", startDate="+start+", endDate="+end+");";
 	
+	}
+	
+	public static void addComment(String fromSIN, String toSIN, String message) {
+		query = "INSERT INTO "
 		
 	}
 
