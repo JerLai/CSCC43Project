@@ -164,91 +164,29 @@ public class DBAPI {
 	}
 
 	/**
-	 * inserts a new user to our database
+	 * adds a row of data to a table based on a pre-written query
 	 * 
 	 * @param connection  to database
-	 * @param username    String username to login with for the user
-	 * @param password    String password prehashed of the user
-	 * @param firstName   String first name of the user
-	 * @param lastName    String last name of the user
-	 * @param accountType String from set of {"Admin", "Receptionist", "Service
-	 *                    Provider", "Settlement Worker"}
+	 * @param query the query to execute
 	 */
-	public static void insertUser(Connection connection, String username, String password, String firstName,
-			String lastName, String accountType) throws SQLException {
-		// check the user is not already made
-		ResultSet results = getData(connection, "ID, firstName, lastName, accountType", "Login",
-				"username = '" + username + "'");
-		if (!results.next()) {
-			String sql = "INSERT INTO Login(username, firstName, lastName, accountType) VALUES(?,?,?,?);";
-			try {
-				// insert the basic information of the user excluding the password
-				PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				preparedStatement.setString(1, username);
-				preparedStatement.setString(2, firstName);
-				preparedStatement.setString(3, lastName);
-				preparedStatement.setString(4, accountType);
-				int id = 0;
-				// retrieve primary key to find the row entry
-				if (preparedStatement.executeUpdate() > 0) {
-					ResultSet uniqueKey = preparedStatement.getGeneratedKeys();
-					if (uniqueKey.next()) {
-						id = uniqueKey.getInt(1);
-						// hash and insert the password to aforementioned row
-						accountPasswordHelper(connection, id, password);
-					}
-				}
-				preparedStatement.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		results.close();
-	}
-
-	/**
-	 * hashes and inserts the password to user entry
-	 * 
-	 * @param connection to database
-	 * @param id         int of the user entry Primary Key
-	 * @param password   String to be hashed
-	 */
-	private static void accountPasswordHelper(Connection connection, int id, String password) {
-		String sql = "Update Login set password = ? where ID = ?;";
-		try {
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, passwords.passwordHash(password));
-			preparedStatement.setInt(2, id);
-			preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Checks the password to match the registered user
-	 * 
-	 * @param connection to database
-	 * @param username   String of the user's username
-	 * @param password   to check with the entry under the unique username
-	 * @return boolean true if match, false otherwise
-	 */
-	protected static boolean checkPassword(Connection connection, String username, String password)
+	public static void sendQuery(Connection connection, String query)
 			throws SQLException {
-		String sql = "SELECT password FROM Login WHERE Username = ?";
-		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setString(1, username);
-		ResultSet results = preparedStatement.executeQuery();
-		boolean match = false;
-		if (results.isClosed())
-			return false;
-		else {
-			match = results.getString("password").equals(passwords.passwordHash(password));
-		}
-		results.close();
-		return match;
+		PreparedStatement preparedStatement = connection.prepareStatement(query);
+		preparedStatement.execute();
+		preparedStatement.close();
+	}
 
+	/**
+	 * returns a ResultSet containing the data of a pre-written query
+	 * @param connection to database
+	 * @param query the query to execute
+	 * @return the data generated from the query
+	 * @throws SQLException
+	 */
+	public static ResultSet getDataByQuery(Connection connection, String query) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(query);
+		ResultSet results = preparedStatement.executeQuery();
+		return results;
 	}
 
 	/**
@@ -282,30 +220,6 @@ public class DBAPI {
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		return results;
-	}
-
-	/**
-	 * returns the user item if valid login credentials are provided
-	 * 
-	 * @param connection to database
-	 * @param username   String user's username
-	 * @param password   String password for the user
-	 * @return User type matching the user's actual account type
-	 */
-	public static User login(Connection connection, String username, String password) throws SQLException {
-		UserFactory AccountCreator = new UserFactory();
-		User Account = null;
-		if (checkPassword(connection, username, password)) {
-			ResultSet results = getData(connection, "ID, firstName, lastName, accountType", "Login",
-					"username = '" + username + "'");
-			int ID = Integer.parseInt(results.getString("ID"));
-			String firstName = results.getString("firstName");
-			String lastName = results.getString("lastName");
-			String accountType = results.getString("accountType");
-			Account = AccountCreator.getUser(username, firstName, lastName, ID, accountType);
-			results.close();
-		}
-		return Account;
 	}
 
 	/**
