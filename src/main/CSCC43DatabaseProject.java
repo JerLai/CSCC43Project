@@ -19,7 +19,7 @@ public class CSCC43DatabaseProject {
 		CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
 		Connection connection = pro.createConnection();
 		
-		/*
+		
 		System.out.println("Welcome to the AirBnB database service! You can exit any time by typing 'exit'");
 		Scanner keyboard = new Scanner(System.in);
 		String input = "";
@@ -34,8 +34,9 @@ public class CSCC43DatabaseProject {
 		System.out.println("Thank you for using our service!");
 		keyboard.close();
 		
-		*/
-		Calendar cal = Calendar.getInstance();
+		
+		/*
+		 	Calendar cal = Calendar.getInstance();
 		cal.set(2020, 0, 6);
 		Date a = new Date(cal.getTime().getTime());
 		cal = Calendar.getInstance();
@@ -72,6 +73,7 @@ public class CSCC43DatabaseProject {
 		//operations.addRating(connection, "111", "yeet", "5", "1");
 		
 		operations.removeCalendar(connection, "1", a, b);
+		 * */
 		
 		if (connection != null) {
 			connection.close();
