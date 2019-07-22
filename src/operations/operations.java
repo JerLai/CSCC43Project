@@ -95,27 +95,14 @@ public class operations {
 	}
 
 	public static void bookListing(Connection connection, String SIN, String listingID, Date start, Date end) throws SQLException {
-
-
-
 		if (start.compareTo(end) > 0){
 			// the start is after the end date somehow
 			//give an error
 			return;
 		}
-
-
 		query = "SELECT * FROM listing LEFT JOIN calendar ON listing.listingID = calendar.listingID WHERE listing.listingID="+listingID+";";
-
-
-
-
-
-
 		ResultSet data = DBAPI.getDataByQuery(connection, query);// or something like this
 		while (data.next()) {
-
-
 			Date setStart = data.getDate("startDate");
 			Date setEnd = data.getDate("endDate");
 			String price = Double.toString(data.getDouble("price"));
@@ -182,10 +169,7 @@ public class operations {
 			else{
 				// date is not within range of this entry
 			}
-
-
 		}
-
 	}
 
 	public static void hostRemoveListing(Connection connection, String listingID, Date start, Date end, String SIN, String hostSIN) throws SQLException {

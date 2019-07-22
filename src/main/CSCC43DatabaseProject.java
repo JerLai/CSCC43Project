@@ -5,12 +5,15 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import operations.operations;
+import operations.queries;
 
 public class CSCC43DatabaseProject {
 
@@ -35,8 +38,26 @@ public class CSCC43DatabaseProject {
 		keyboard.close();
 		
 		
+		
 		/*
-		 	Calendar cal = Calendar.getInstance();
+		 
+		// USAGE OF QUERIES 
+		 
+		Calendar cal = Calendar.getInstance();
+		cal.set(2020, 0, 3);
+		Date a = new Date(cal.getTime().getTime());
+		cal = Calendar.getInstance();
+		cal.set(2020, 0, 4);
+		Date b = new Date(cal.getTime().getTime());
+		//startFilter(Connection, boolean, String, boolean, double, double, double, boolean, String, boolean, Date, Date, boolean, double, double, boolean, String, int) 
+		ArrayList<HashMap<String, String>> data = queries.startFilter(connection, true, "MMM MMM", true, 100000.0, 69.0, 69.0, true, "london", true, a, b , true, 0.0, 70.0, false, "", 1);
+		System.out.println(data);
+		
+		
+		
+		// USAGE OF THE OPERATIONS
+		 
+		Calendar cal = Calendar.getInstance();
 		cal.set(2020, 0, 6);
 		Date a = new Date(cal.getTime().getTime());
 		cal = Calendar.getInstance();
