@@ -4,16 +4,10 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `air_bnb`
 --
-CREATE DATABASE IF NOT EXISTS `air_bnb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `air_bnb`
 USE `air_bnb`;
 
 -- --------------------------------------------------------
@@ -34,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `amenities` (
   `outdoor` tinyint(1) NOT NULL,
   `basic` tinyint(1) NOT NULL,
   FOREIGN KEY `listingID` REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -49,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `calendar` (
   `price` double NOT NULL,
   PRIMARY KEY (`listingID`, `startDate`),
   FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -66,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `cancelled` (
   PRIMARY KEY (`listingID`, `startDate`),
   FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY REFERENCES `startDate` (`startDate`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -81,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   `listingID` int(10) NOT NULL,
   `startDate` date NOT NULL,
   `endDate` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -92,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 CREATE TABLE IF NOT EXISTS `host` (
   `SIN` int(9) PRIMARY KEY NOT NULL,
   FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -109,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `listing` (
   `city` varchar(25) NOT NULL,
   `country` varchar(25) NOT NULL,
   `postalCode` char(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -123,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `listingrating` (
   `fromSIN` int(9) NOT NULL,
   `rating` double NOT NULL,
   `message` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -135,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `renter` (
   `SIN` int(9) PRIMARY KEY NOT NULL,
   `creditCard` int(16) NOT NULL,
   FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -151,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `reservations` (
   PRIMARY KEY (`listingID`, `startDate`),
   FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY REFERENCES `startDate` (`startDate`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -164,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `usercomments` (
   `toSIN` int(9) NOT NULL,
   `fromSIN` int(9) NOT NULL,
   `message` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)
 
 -- --------------------------------------------------------
 
@@ -178,13 +172,5 @@ CREATE TABLE IF NOT EXISTS `users` (
   `address` varchar(35) NOT NULL,
   `occupation` char(20) NOT NULL,
   `DoB` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `test`;
+)
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
