@@ -1,11 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.8.3
--- https://www.phpmyadmin.net/
---
--- Host: localhost:3306
--- Generation Time: Jul 20, 2019 at 08:57 PM
--- Server version: 5.7.24-log
--- PHP Version: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -30,8 +22,8 @@ USE `air_bnb`;
 -- Table structure for table `amenities`
 --
 
-CREATE TABLE `amenities` (
-  `listingID` int(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `amenities` (
+  `listingID` int(10) NOT NULL PRIMARY KEY,
   `dining` char(10) NOT NULL,
   `safetyFeatures` char(10) NOT NULL,
   `facilities` char(10) NOT NULL,
@@ -40,7 +32,8 @@ CREATE TABLE `amenities` (
   `notIncluded` char(20) NOT NULL,
   `bedAndBath` tinyint(1) NOT NULL,
   `outdoor` tinyint(1) NOT NULL,
-  `basic` tinyint(1) NOT NULL
+  `basic` tinyint(1) NOT NULL,
+  FOREIGN KEY `listingID` REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -49,11 +42,13 @@ CREATE TABLE `amenities` (
 -- Table structure for table `calendar`
 --
 
-CREATE TABLE `calendar` (
+CREATE TABLE IF NOT EXISTS `calendar` (
   `listingID` int(10) NOT NULL,
   `startDate` date NOT NULL,
   `endDate` date NOT NULL,
-  `price` double NOT NULL
+  `price` double NOT NULL,
+  PRIMARY KEY (`listingID`, `startDate`),
+  FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -62,22 +57,25 @@ CREATE TABLE `calendar` (
 -- Table structure for table `cancelled`
 --
 
-CREATE TABLE `cancelled` (
+CREATE TABLE IF NOT EXISTS `cancelled` (
   `hostSIN` int(9) NOT NULL,
   `listingID` int(10) NOT NULL,
   `startDate` date NOT NULL,
   `endDate` date NOT NULL,
-  `renterSIN` int(9) NOT NULL
+  `renterSIN` int(9) NOT NULL,
+  PRIMARY KEY (`listingID`, `startDate`),
+  FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY REFERENCES `startDate` (`startDate`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `history`
+-- Table structure for table `history`,
 --
 
-CREATE TABLE `history` (
-  `historyID` int(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `history` (
+  `historyID` int(10) PRIMARY KEY NOT NULL DEFAULT 0 AUTO_INCREMENT,
   `hostSIN` int(9) NOT NULL,
   `renterSIN` int(9) NOT NULL,
   `listingID` int(10) NOT NULL,
@@ -91,8 +89,9 @@ CREATE TABLE `history` (
 -- Table structure for table `host`
 --
 
-CREATE TABLE `host` (
-  `SIN` int(9) NOT NULL
+CREATE TABLE IF NOT EXISTS `host` (
+  `SIN` int(9) PRIMARY KEY NOT NULL,
+  FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -101,8 +100,8 @@ CREATE TABLE `host` (
 -- Table structure for table `listing`
 --
 
-CREATE TABLE `listing` (
-  `listingID` int(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `listing` (
+  `listingID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY DEFAULT 0,
   `hostSIN` int(9) NOT NULL,
   `type` char(10) NOT NULL,
   `longitude` double NOT NULL,
@@ -118,8 +117,8 @@ CREATE TABLE `listing` (
 -- Table structure for table `listingrating`
 --
 
-CREATE TABLE `listingrating` (
-  `ratingID` int(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `listingrating` (
+  `ratingID` int(10) NOT NULL PRIMARY KEY DEFAULT 0,
   `listingID` int(10) NOT NULL,
   `fromSIN` int(9) NOT NULL,
   `rating` double NOT NULL,
@@ -132,9 +131,10 @@ CREATE TABLE `listingrating` (
 -- Table structure for table `renter`
 --
 
-CREATE TABLE `renter` (
-  `SIN` int(9) NOT NULL,
-  `creditCard` int(16) NOT NULL
+CREATE TABLE IF NOT EXISTS `renter` (
+  `SIN` int(9) PRIMARY KEY NOT NULL,
+  `creditCard` int(16) NOT NULL,
+  FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -143,11 +143,14 @@ CREATE TABLE `renter` (
 -- Table structure for table `reservations`
 --
 
-CREATE TABLE `reservations` (
+CREATE TABLE IF NOT EXISTS `reservations` (
   `listingID` int(10) NOT NULL,
   `renterSIN` int(9) NOT NULL,
   `endDate` date NOT NULL,
-  `startDate` date NOT NULL
+  `startDate` date NOT NULL,
+  PRIMARY KEY (`listingID`, `startDate`),
+  FOREIGN KEY REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY REFERENCES `startDate` (`startDate`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -156,8 +159,8 @@ CREATE TABLE `reservations` (
 -- Table structure for table `usercomments`
 --
 
-CREATE TABLE `usercomments` (
-  `commentID` int(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS `usercomments` (
+  `commentID` int(10) NOT NULL PRIMARY KEY DEFAULT 0 AUTO_INCREMENT,
   `toSIN` int(9) NOT NULL,
   `fromSIN` int(9) NOT NULL,
   `message` text NOT NULL
@@ -169,140 +172,15 @@ CREATE TABLE `usercomments` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `SIN` int(9) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `SIN` int(9) NOT NULL PRIMARY KEY,
   `name` varchar(15) NOT NULL,
   `address` varchar(35) NOT NULL,
   `occupation` char(20) NOT NULL,
   `DoB` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Indexes for dumped tables
---
 
---
--- Indexes for table `amenities`
---
-ALTER TABLE `amenities`
-  ADD KEY `listingID` (`listingID`);
-
---
--- Indexes for table `calendar`
---
-ALTER TABLE `calendar`
-  ADD KEY `listingID` (`listingID`);
-
---
--- Indexes for table `cancelled`
---
-ALTER TABLE `cancelled`
-  ADD KEY `listingID` (`listingID`),
-  ADD KEY `startDate` (`startDate`,`endDate`);
-
---
--- Indexes for table `history`
---
-ALTER TABLE `history`
-  ADD PRIMARY KEY (`historyID`),
-  ADD KEY `listingID` (`listingID`),
-  ADD KEY `hostSIN` (`hostSIN`);
-
---
--- Indexes for table `host`
---
-ALTER TABLE `host`
-  ADD KEY `SIN` (`SIN`);
-
---
--- Indexes for table `listing`
---
-ALTER TABLE `listing`
-  ADD PRIMARY KEY (`listingID`),
-  ADD KEY `listingID` (`listingID`);
-
---
--- Indexes for table `listingrating`
---
-ALTER TABLE `listingrating`
-  ADD PRIMARY KEY (`ratingID`);
-
---
--- Indexes for table `renter`
---
-ALTER TABLE `renter`
-  ADD KEY `SIN` (`SIN`);
-
---
--- Indexes for table `reservations`
---
-ALTER TABLE `reservations`
-  ADD KEY `listingID` (`listingID`);
-
---
--- Indexes for table `usercomments`
---
-ALTER TABLE `usercomments`
-  ADD PRIMARY KEY (`commentID`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`SIN`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `history`
---
-ALTER TABLE `history`
-  MODIFY `historyID` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `listing`
---
-ALTER TABLE `listing`
-  MODIFY `listingID` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `amenities`
---
-ALTER TABLE `amenities`
-  ADD CONSTRAINT `amenities_ibfk_1` FOREIGN KEY (`listingID`) REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `calendar`
---
-ALTER TABLE `calendar`
-  ADD CONSTRAINT `calendar_ibfk_1` FOREIGN KEY (`listingID`) REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `host`
---
-ALTER TABLE `host`
-  ADD CONSTRAINT `host_ibfk_1` FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`);
-
---
--- Constraints for table `renter`
---
-ALTER TABLE `renter`
-  ADD CONSTRAINT `renter_ibfk_1` FOREIGN KEY (`SIN`) REFERENCES `users` (`SIN`);
-
---
--- Constraints for table `reservations`
---
-ALTER TABLE `reservations`
-  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`listingID`) REFERENCES `listing` (`listingID`) ON DELETE CASCADE ON UPDATE CASCADE;
---
--- Database: `test`
---
 CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `test`;
 COMMIT;
