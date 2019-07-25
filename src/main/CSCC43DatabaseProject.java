@@ -53,10 +53,17 @@ public class CSCC43DatabaseProject {
 		}
 		
 		ArrayList<String> am = reports.commercialHosts(connection, "canada");
+		//System.out.println(am);
 		
+		HashMap<String, ArrayList<String>> mas = reports.rentersRankingCity(connection, a, b);
+		//System.out.println(mas);
+		cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		Date c = new Date(cal.getTime().getTime());
+		// Need to test with new db // res = reports.largestHost(connection, c);
 		
-		
-		
+		HashMap<Integer, HashMap<String, Integer>> red = reports.wordCloud(connection);
+		System.out.println(red);
 		//System.out.println(res);
 		
 		/*
