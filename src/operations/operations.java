@@ -41,6 +41,16 @@ public class operations {
 
 	}
 
+	public static void makeHost(Connection connection, String SIN) throws SQLException {
+		query = "INSERT INTO host(SIN) VALUES('"+SIN+"')";
+		DBAPI.sendQuery(connection, query);
+	}
+	
+	public static void makeRenter(Connection connection, String SIN, String credit) throws SQLException {
+		query = "INSERT INTO renter(SIN, creditCard) VALUES('"+SIN+"','"+credit+"');";
+		DBAPI.sendQuery(connection, query);
+	}
+	
 	public static void deleteProfile(Connection connection, String SIN, boolean type) throws SQLException {
 
 
@@ -52,16 +62,17 @@ public class operations {
 		else { // renter
 			query = "DELETE FROM renter WHERE SIN="+SIN+";";
 			DBAPI.sendQuery(connection, query);
-
-
-
 		}
+
+	}
+	
+	public static void deleteUser(Connection connection, String SIN) throws SQLException {
 		query = "DELETE FROM users WHERE SIN="+SIN+";";
 		DBAPI.sendQuery(connection, query);
 	}
 
 
-	public static ArrayList<HashMap> processResult(ResultSet r) throws SQLException{
+	private static ArrayList<HashMap> processResult(ResultSet r) throws SQLException{
 		ArrayList<HashMap> result = new ArrayList<HashMap>();
 		HashMap<String, String> entry = new HashMap<String, String>();
 
@@ -91,6 +102,17 @@ public class operations {
 
 	public static void createCalendar(Connection connection, String listingID, String startDate, String endDate, String price) throws SQLException {
 		query = "INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('" + listingID + "', '" + startDate + "', '" + endDate + "', '" + price +"')";
+		DBAPI.sendQuery(connection, query);
+	}
+	
+	public static void deleteListing(Connection connection, String listingID) throws SQLException {
+		query = "DELETE FROM listing WHERE listingID='"+listingID+"'";
+		DBAPI.sendQuery(connection, query);
+		
+		query = "DELETE FROM calendar WHERE listingID='"+listingID+"'";
+		DBAPI.sendQuery(connection, query);
+		
+		query = "DELETE FROM reservations WHERE listingID='"+listingID+"'";
 		DBAPI.sendQuery(connection, query);
 	}
 
@@ -246,13 +268,18 @@ public class operations {
 
 		if (!set) {
 			query = "INSERT calendar(listingID, startDate, endDate, price) VALUES('"+listingID+"', '" +start.toString() + "', '" + end.toString() + "', '" + price+"');";
-			
+			DBAPI.sendQuery(connection, query);
 		}
 	}
 
 	public static void hostUpdatePrice(Connection connection, String listingID, String SIN, Date start, Date end, String price) throws SQLException {
 		query = "UPDATE calendar SET price='"+price+"' WHERE startDate='"+start+"'AND endDate='"+end+"';";
 		System.out.println(query);
+		DBAPI.sendQuery(connection, query);
+	}
+	
+	public static void updateTime(Connection connection, String listingID, Date start, Date end, Date newStart, Date newEnd) throws SQLException {
+		query = "UPDATE calendar SET startDate='"+newStart+"', endDate='"+newEnd+"' WHERE startDate='"+start+"' AND endDate='"+end+"' AND listingID='"+listingID+"'";
 		DBAPI.sendQuery(connection, query);
 	}
 
