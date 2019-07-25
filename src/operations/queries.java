@@ -74,6 +74,103 @@ public class queries {
 		
 	}
 	
+	public static ArrayList<ArrayList<String>> getUsers(Connection connection) throws SQLException {
+		ArrayList<String> entry = new ArrayList<String>();
+		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
+		query = "SELECT * FROM users";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			entry = new ArrayList<String>();
+			String name = data.getString("name");
+			String address = data.getString("address");
+			String occupation = data.getString("occupation");
+			Date dob = data.getDate("DoB");
+			int SIN = data.getInt("SIN");
+			
+			entry.add(Integer.toString(SIN));
+			entry.add(name);
+			entry.add(address);
+			entry.add(occupation);
+			entry.add(dob.toString());
+			
+			results.add(entry);
+		}
+		
+		return results;
+	}
+	
+	public static ArrayList<ArrayList<String>> getHosts(Connection connection) throws SQLException {
+		ArrayList<String> entry = new ArrayList<String>();
+		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
+		query = "SELECT * FROM users,host WHERE users.SIN=host.SIN";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			entry = new ArrayList<String>();
+			String name = data.getString("name");
+			String address = data.getString("address");
+			String occupation = data.getString("occupation");
+			Date dob = data.getDate("DoB");
+			int SIN = data.getInt("SIN");
+			
+			entry.add(Integer.toString(SIN));
+			entry.add(name);
+			entry.add(address);
+			entry.add(occupation);
+			entry.add(dob.toString());
+			
+			results.add(entry);
+		}
+		
+		return results;
+	}
+	
+	public static ArrayList<ArrayList<String>> getRenter(Connection connection) throws SQLException {
+		ArrayList<String> entry = new ArrayList<String>();
+		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
+		query = "SELECT * FROM users,renter WHERE users.SIN=renter.SIN";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			entry = new ArrayList<String>();
+			String name = data.getString("name");
+			String address = data.getString("address");
+			String occupation = data.getString("occupation");
+			Date dob = data.getDate("DoB");
+			int SIN = data.getInt("SIN");
+			int credit = data.getInt("creditCard");
+			
+			entry.add(Integer.toString(SIN));
+			entry.add(name);
+			entry.add(address);
+			entry.add(occupation);
+			entry.add(dob.toString());
+			entry.add(Integer.toString(credit));
+			
+			results.add(entry);
+		}
+		
+		return results;
+	}
+	
+	public static ArrayList<String> getHistory(Connection connection, String SIN) throws SQLException { // useful to get SIN for comments
+		ArrayList<String> result = new ArrayList<String>();
+		query = "SELECT * FROM history WHERE hostSIN='"+SIN+"' OR renterSIN='"+SIN+"'";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			int host = data.getInt("hostSIN");
+			int renter = data.getInt("renterSIN");
+			int listing = data.getInt("listingID");
+			Date start = data.getDate("startDate");
+			Date end = data.getDate("endDate");
+			result.add(Integer.toString(host));
+			result.add(Integer.toString(renter));
+			result.add(Integer.toString(listing));
+			result.add(start.toString());
+			result.add(end.toString());
+		}
+		
+		return result;
+	}
+	
 	public static ArrayList<HashMap<String, String>> processResult(ResultSet r) throws SQLException{
 		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> entry = new HashMap<String, String>();

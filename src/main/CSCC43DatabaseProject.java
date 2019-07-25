@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import operations.operations;
 import operations.queries;
+import operations.reports;
 
 public class CSCC43DatabaseProject {
 
@@ -22,7 +23,7 @@ public class CSCC43DatabaseProject {
 		CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
 		Connection connection = pro.createConnection();
 		
-		
+		/*
 		System.out.println("Welcome to the AirBnB database service! You can exit any time by typing 'exit'");
 		Scanner keyboard = new Scanner(System.in);
 		String input = "";
@@ -36,8 +37,34 @@ public class CSCC43DatabaseProject {
 		}
 		System.out.println("Thank you for using our service!");
 		keyboard.close();
+		*/
+		Calendar cal = Calendar.getInstance();
+		cal.set(2019, 0, 3);
+		Date a = new Date(cal.getTime().getTime());
+		cal = Calendar.getInstance();
+		cal.set(2021, 0, 4);
+		Date b = new Date(cal.getTime().getTime());
+		HashMap<String, Integer> res = reports.bookingsDateCity(connection, a, b);
+		res = reports.bookingsDatePostal(connection, "london", a, b);
+		res = reports.numListings(connection,2);
+		HashMap<String, ArrayList<String>> memes = reports.hostRanking(connection, 1);
+		for (String bb: memes.keySet()) {
+			//System.out.println(bb + "  "+ memes.get(bb));
+		}
 		
+		ArrayList<String> am = reports.commercialHosts(connection, "canada");
+		//System.out.println(am);
 		
+		HashMap<String, ArrayList<String>> mas = reports.rentersRankingCity(connection, a, b);
+		//System.out.println(mas);
+		cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		Date c = new Date(cal.getTime().getTime());
+		// Need to test with new db // res = reports.largestHost(connection, c);
+		
+		HashMap<Integer, HashMap<String, Integer>> red = reports.wordCloud(connection);
+		System.out.println(red);
+		//System.out.println(res);
 		
 		/*
 		 
@@ -78,6 +105,7 @@ public class CSCC43DatabaseProject {
 		Date s2 = new Date(cal.getTime().getTime());
 		
 		cal.set(2020, 0, 8);
+		
 		Date e2 = new Date(cal.getTime().getTime());
 		
 		//operations.bookListing(connection, "111", "1", a, b);
