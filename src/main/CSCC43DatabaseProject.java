@@ -20,50 +20,39 @@ public class CSCC43DatabaseProject {
 
 	public static void main(String[] args) throws SQLException {
 		// TODO Auto-generated method stub
-		CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
-		Connection connection = pro.createConnection();
-		
-		/*
-		System.out.println("Welcome to the AirBnB database service! You can exit any time by typing 'exit'");
-		Scanner keyboard = new Scanner(System.in);
-		String input = keyboard.next();
-		while (!input.equalsIgnoreCase("exit")) {
-			input = keyboard.next();
-			if (input.equals("login")) {
-				System.out.println("Welcome!");
-			} else {
-				System.out.print("Please type in 'login' to select a user: ");
-			}
+		//CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
+		//Connection connection = pro.createConnection();
+		CommandLineHandler cmd = new CommandLineHandler();
+		if (cmd.startSession() && cmd.execute()) {
+			cmd.endSession();
 		}
-		System.out.println("Thank you for using our service!");
-		keyboard.close();
-		*/
-		Calendar cal = Calendar.getInstance();
-		cal.set(2019, 0, 3);
-		Date a = new Date(cal.getTime().getTime());
-		cal = Calendar.getInstance();
-		cal.set(2021, 0, 4);
-		Date b = new Date(cal.getTime().getTime());
-		HashMap<String, Integer> res = reports.bookingsDateCity(connection, a, b);
-		res = reports.bookingsDatePostal(connection, "london", a, b);
-		res = reports.numListings(connection,2);
-		HashMap<String, ArrayList<String>> memes = reports.hostRanking(connection, 1);
-		for (String bb: memes.keySet()) {
-			//System.out.println(bb + "  "+ memes.get(bb));
-		}
-		
-		ArrayList<String> am = reports.commercialHosts(connection, "canada");
-		//System.out.println(am);
-		
-		HashMap<String, ArrayList<String>> mas = reports.rentersRankingCity(connection, a, b);
-		//System.out.println(mas);
-		cal = Calendar.getInstance();
-		cal.add(Calendar.YEAR, -1);
-		Date c = new Date(cal.getTime().getTime());
-		// Need to test with new db // res = reports.largestHost(connection, c);
-		
-		HashMap<Integer, HashMap<String, Integer>> red = reports.wordCloud(connection);
-		System.out.println(red);
+
+//		Calendar cal = Calendar.getInstance();
+//		cal.set(2019, 0, 3);
+//		Date a = new Date(cal.getTime().getTime());
+//		cal = Calendar.getInstance();
+//		cal.set(2021, 0, 4);
+//		Date b = new Date(cal.getTime().getTime());
+//		HashMap<String, Integer> res = reports.bookingsDateCity(connection, a, b);
+//		res = reports.bookingsDatePostal(connection, "london", a, b);
+//		res = reports.numListings(connection,2);
+//		HashMap<String, ArrayList<String>> memes = reports.hostRanking(connection, 1);
+//		for (String bb: memes.keySet()) {
+//			//System.out.println(bb + "  "+ memes.get(bb));
+//		}
+//		
+//		ArrayList<String> am = reports.commercialHosts(connection, "canada");
+//		//System.out.println(am);
+//		
+//		HashMap<String, ArrayList<String>> mas = reports.rentersRankingCity(connection, a, b);
+//		//System.out.println(mas);
+//		cal = Calendar.getInstance();
+//		cal.add(Calendar.YEAR, -1);
+//		Date c = new Date(cal.getTime().getTime());
+//		// Need to test with new db // res = reports.largestHost(connection, c);
+//		
+//		HashMap<Integer, HashMap<String, Integer>> red = reports.wordCloud(connection);
+//		System.out.println(red);
 		//System.out.println(res);
 		
 		/*
@@ -124,10 +113,10 @@ public class CSCC43DatabaseProject {
 		operations.removeCalendar(connection, "1", a, b);
 		 * */
 		
-		if (connection != null) {
-			connection.close();
-		}
-		
+//		if (connection != null) {
+//			connection.close();
+//		}
+//		
 	}
 
 	Connection createConnection() throws SQLException{
