@@ -15,7 +15,7 @@ public class CSCC43DatabaseProject {
 		Connection connection = pro.createConnection();
 		System.out.println("Welcome to the AirBnB database service! You can exit any time by typing 'exit'");
 		Scanner keyboard = new Scanner(System.in);
-		String input = "";
+		String input = keyboard.next();
 		while (!input.equalsIgnoreCase("exit")) {
 			input = keyboard.next();
 			if (input.equals("login")) {

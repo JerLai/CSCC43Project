@@ -1,9 +1,12 @@
 package main.dbsetup;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,27 +20,41 @@ import main.CSCC43DatabaseProject;
  */
 public class DBDriver {
 
+	private static final String sqlClass = "com.mysql.cj.jdbc.Driver";
+	private static final String CONNECTION = "jdbc:mysql://localhost/";
+
 	/**
 	 * Connects to SQL db
 	 * 
 	 * @return the connection
+	 * @throws ClassNotFoundException 
 	 */
-	protected static Connection dbConnect() {
+	public static Connection dbConnect(String[] cred) throws ClassNotFoundException {
+		Class.forName(sqlClass);
 		Connection connection = null;
+		String user = cred[0];
+		String pass = cred[1];
+		String connectionName = CONNECTION + cred[2];
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/test", "Kamito", "TarElendil1");
-			System.out.println("Database Connection Success");
 
-		} catch (ClassNotFoundException ex) {
-			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);
+			connection = DriverManager.getConnection(connectionName, user, pass);
+			System.out.println("Database Connection Success");
 		} catch (SQLException ex) {
+			System.err.println("Database Connection Failure");
 			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		return connection;
+	}
+
+	/**
+	 * Signals start of disconnect
+	 * 
+	 * @return the connection
+	 * @throws ClassNotFoundException 
+	 */
+	public void dbDisconnect() {
+		System.out.println("Attempting Database disconnection");
 	}
 
 	/**

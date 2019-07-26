@@ -1,6 +1,7 @@
 package main.dbsetup;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -220,6 +221,48 @@ public class DBAPI {
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		return results;
+	}
+
+	/**
+	 * returns the schema for the database
+	 * @param connection
+	 * @return
+	 */
+	public static ArrayList<String> getSchema(Connection connection) {
+		ArrayList<String> output = new ArrayList<String>();
+		try {
+			DatabaseMetaData meta = connection.getMetaData();
+			ResultSet schemas = meta.getTables(null,null,"%",null);
+			//ResultSet catalogs = meta.getCatalogs();
+			while (schemas.next()) {
+				output.add(schemas.getString("TABLE_NAME"));
+			}
+			schemas.close();
+		} catch (SQLException e) {
+			System.err.println("Retrieval of Schema Info failed!");
+			e.printStackTrace();
+			output.clear();
+		}
+		return output;
+	}
+
+    // Controls the execution of functionality: "4. Print table schema."
+	public static ArrayList<String> colSchema(Connection connection, String tableName) {
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+			DatabaseMetaData meta = connection.getMetaData();
+			ResultSet rs = meta.getColumns(null, null, tableName, null);
+			while(rs.next()) {
+				result.add(rs.getString(4));
+				result.add(rs.getString(6));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println("Retrieval of Table Info failed!");
+			e.printStackTrace();
+			result.clear();
+		}
+		return result;
 	}
 
 	/**
