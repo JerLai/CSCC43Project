@@ -418,10 +418,23 @@ public class queries {
 		return result;
 	}
 	
-	public static ArrayList<HashMap<String, String>> viewTimes(String SIN, String listingID){
+	public static ArrayList<HashMap<String, String>> showCalendar(Connection connection, String listingID) throws SQLException{
 		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> entry;
+		query = "Select * FROM calendar,listing WHERE listing.listingID=calendar.listingID AND listingID="+listingID+";";
 		
-		String query = "Select startDate, endDate FROM calendar WHERE listingID="+listingID+";";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			entry = new HashMap<String, String>();
+			
+			entry.put("startDate", data.getDate("startDate").toString());
+			entry.put("endDate", data.getDate("endDate").toString());
+			entry.put("listingID", Integer.toString(data.getInt(listingID)));
+			entry.put("renterSIN", Integer.toString(data.getInt("renterSIN")).toString());
+			entry.put("hostSIN", Integer.toString(data.getInt("hostSIN")));
+			result.add(entry);
+		}
+		
 		return result;
 		
 		
