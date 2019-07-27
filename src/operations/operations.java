@@ -119,6 +119,7 @@ public class operations {
 		if (start.compareTo(end) > 0){
 			// the start is after the end date somehow
 			//give an error
+			System.out.println("Start Date has to be after End Date, try again.");
 			return;
 		}
 		query = "SELECT * FROM listing LEFT JOIN calendar ON listing.listingID = calendar.listingID WHERE listing.listingID="+listingID+";";
@@ -278,6 +279,14 @@ public class operations {
 	}
 	
 	public static void updateTime(Connection connection, String listingID, Date start, Date end, Date newStart, Date newEnd) throws SQLException {
+		
+		if (start.compareTo(end) > 0){
+			// the start is after the end date somehow
+			//give an error
+			System.out.println("Start Date has to be after End Date, try again.");
+			return;
+		}
+		
 		query = "UPDATE calendar SET startDate='"+newStart+"', endDate='"+newEnd+"' WHERE startDate='"+start+"' AND endDate='"+end+"' AND listingID='"+listingID+"'";
 		DBAPI.sendQuery(connection, query);
 	}
