@@ -346,12 +346,52 @@ public class queries {
 		return (distance/1000);
 	}
 	
-	public static ArrayList<HashMap<String, String>> allListings() {
+	public static ArrayList<HashMap<String, String>> hostListings(Connection connection, String SIN) throws SQLException {
 		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> entry = new HashMap<String, String>();
+		String query = "Select * FROM listing WHERE hostSIN='"+SIN+"'";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		
-		String query = "Select * FROM listing";
+		while (data.next()) {
+			entry = new HashMap<String, String>();
+			entry.put("listingID", Integer.toString(data.getInt("listingID")));
+			entry.put("hostSIN", Integer.toString(data.getInt("hostSIN")));
+			entry.put("type", data.getString("type"));
+			entry.put("longitude",  Double.toString(data.getDouble("longitude")));
+			entry.put("latitude", Double.toString(data.getDouble("latitude")));
+			entry.put("city", data.getString("city"));
+			entry.put("country", data.getString("country"));
+			entry.put("postalCode", data.getString("postalCode"));
+			
+			
+			result.add(entry);
+		}
 		
+		return result;
+	}
+	
+
+	public static ArrayList<HashMap<String, String>> renterBookings(Connection connection, String SIN) throws SQLException {
+		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> entry = new HashMap<String, String>();
+		String query = "Select * FROM listing, reservations WHERE renterSIN='"+SIN+"' AND reservations.listingID=listing.listingID";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		
+		while (data.next()) {
+			entry = new HashMap<String, String>();
+			entry.put("listingID", Integer.toString(data.getInt("listingID")));
+			entry.put("hostSIN", Integer.toString(data.getInt("hostSIN")));
+			entry.put("type", data.getString("type"));
+			entry.put("longitude",  Double.toString(data.getDouble("longitude")));
+			entry.put("latitude", Double.toString(data.getDouble("latitude")));
+			entry.put("city", data.getString("city"));
+			entry.put("country", data.getString("country"));
+			entry.put("postalCode", data.getString("postalCode"));
+			entry.put("startDate", data.getDate("startDate").toString());
+			entry.put("endDate", data.getDate("endDate").toString());
+			
+			result.add(entry);
+		}
 		
 		return result;
 	}
@@ -361,6 +401,7 @@ public class queries {
 		
 		String query = "Select startDate, endDate FROM calendar WHERE listingID="+listingID+";";
 		return result;
+		
 		
 	}
 	
