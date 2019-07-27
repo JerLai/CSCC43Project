@@ -93,9 +93,9 @@ public class operations {
 
 
 
-	public static void createListing(Connection connection, String listingID, String SIN, String types, String longitude, String latitude, String city, String country, String postalCode) throws SQLException {
+	public static void createListing(Connection connection, String listingID, String SIN, String types, String longitude, String latitude, String city, String country, String address, String postalCode) throws SQLException {
 
-		query = "INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, postalCode) VALUES('"+ SIN + "', '" + types+"', '" + longitude + "', '" + latitude + "', '" + city + "', '" + country + "', '" + postalCode + "');";
+		query = "INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('"+ SIN + "', '" + types+"', '" + longitude + "', '" + latitude + "', '" + city + "', '" + country + "', '" + address + "', '" + postalCode + "');";
 		DBAPI.sendQuery(connection, query);
 
 	}
