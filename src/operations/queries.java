@@ -151,9 +151,29 @@ public class queries {
 		return results;
 	}
 	
-	public static ArrayList<String> getHistory(Connection connection, String SIN) throws SQLException { // useful to get SIN for comments
+	public static ArrayList<String> getHistoryRenter(Connection connection, String SIN) throws SQLException { // useful to get SIN for comments
 		ArrayList<String> result = new ArrayList<String>();
-		query = "SELECT * FROM history WHERE hostSIN='"+SIN+"' OR renterSIN='"+SIN+"'";
+		query = "SELECT * FROM history WHERE renterSIN='"+SIN+"'";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			int host = data.getInt("hostSIN");
+			int renter = data.getInt("renterSIN");
+			int listing = data.getInt("listingID");
+			Date start = data.getDate("startDate");
+			Date end = data.getDate("endDate");
+			result.add(Integer.toString(host));
+			result.add(Integer.toString(renter));
+			result.add(Integer.toString(listing));
+			result.add(start.toString());
+			result.add(end.toString());
+		}
+		
+		return result;
+	}
+	
+	public static ArrayList<String> getHistoryHost(Connection connection, String SIN) throws SQLException { // useful to get SIN for comments
+		ArrayList<String> result = new ArrayList<String>();
+		query = "SELECT * FROM history WHERE hostSIN='"+SIN+"'";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		while (data.next()) {
 			int host = data.getInt("hostSIN");

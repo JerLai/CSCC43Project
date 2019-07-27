@@ -38,7 +38,6 @@ public class operations {
 		//renter
 		query = "INSERT INTO renter(SIN, creditCard) VALUES('"+SIN+"','"+creditCard+"');";
 		DBAPI.sendQuery(connection, query);
-
 	}
 
 	public static void makeHost(Connection connection, String SIN) throws SQLException {
