@@ -321,7 +321,7 @@ public class queries {
 	
 	private static ArrayList<HashMap<String, String>> specificAddress(Connection connection, String address, ArrayList<HashMap<String, String>> data) throws SQLException{
 		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
-		query = "SELECT * FROM "+all+" WHERE city LIKE '" + address+"' OR country LIKE '"+address+"';";
+		query = "SELECT * FROM "+all+" WHERE address LIKE '"+ address +"'";
 		//System.out.println(query);
 		result = processResult(DBAPI.getDataByQuery(connection, query));
 		result = intersection(data, result);		
