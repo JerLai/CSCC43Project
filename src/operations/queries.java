@@ -427,5 +427,23 @@ public class queries {
 		
 	}
 	
+	public static ArrayList<HashMap<String, String>> reservationsToHost(Connection connection, String SIN) throws SQLException{
+		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> entry = new HashMap<String, String>();
+		query = "SELECT * FROM reservations, listing, users WHERE users.SIN = listing.hostSIN AND listing.listingID = reservations.listingID";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		while (data.next()) {
+			entry = new HashMap<String, String>();
+			entry.put("listingID", Integer.toString(data.getInt("listingID")));
+			entry.put("renterSIN", Integer.toString(data.getInt("renterSIN")));
+			entry.put("endDate", data.getDate("endDate").toString());
+			entry.put("startDate", data.getDate("startDate").toString());
+			
+			result.add(entry);
+		}
+		
+		return result;
+	}
+	
 	
 }
