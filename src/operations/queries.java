@@ -384,7 +384,8 @@ public class queries {
 			entry.put("type", data.getString("type"));
 			entry.put("longitude",  Double.toString(data.getDouble("longitude")));
 			entry.put("latitude", Double.toString(data.getDouble("latitude")));
-			entry.put("city", data.getString("city"));
+			entry.put("city", data.getString("citresy"));
+			entry.put("price", Double.toString(data.getDouble("price")));
 			entry.put("address", data.getString("address"));
 			entry.put("country", data.getString("country"));
 			entry.put("postalCode", data.getString("postalCode"));
