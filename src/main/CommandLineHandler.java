@@ -2,12 +2,16 @@ package main;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import main.dbsetup.DBAPI;
 import main.dbsetup.DBDriver;
+import main.menus.HostMenu;
+import main.menus.RenterMenu;
 import operations.operations;
+import operations.queries;
 
 /**
  * handles Command Line Handler to handle running this java program outside an
@@ -97,45 +101,162 @@ public class CommandLineHandler {
 				try {
 					choice = Integer.parseInt(input);
 					switch (choice) { // Activate the desired functionality
-					case 1: // Create Host Profile
+					case 1: // Create User Account + Host/Renter
 						String hostInfo[] = this.userInfo();
-						operations.createProfile(userConnection, hostInfo[0], hostInfo[1], hostInfo[2], hostInfo[3],
-								hostInfo[4]);
-						break;
-					case 2: // Create Renter Profile
-						String userInfo[] = this.userInfo();
-						System.out.print("\nEnter your Credit Card number: ");
-						String creditCard = sc.next();
-						operations.createProfile(userConnection, userInfo[0], userInfo[1], userInfo[2], userInfo[3],
-								userInfo[4], creditCard);
-						break;
-					case 3: // Select Host Profile
-						System.out.print("Enter 0 to return, or a SIN for a host profile: ");
-						String hostSIN = sc.next();
-						if (Integer.parseInt(hostSIN) == 0) {
-							break;
-						} else {
-							hostMenu();
-							// TODO: host menu options
-							break;
+						System.out.print(
+								"\nType 'host' to start with a host profile, or 'renter' for a renter profile, or anything else to exit: ");
+						input = sc.nextLine();
+						if (input.equalsIgnoreCase("renter")) {
+							System.out.print("Enter your Credit Card number: ");
+							String creditCard = sc.next();
+							try {
+								operations.createProfile(userConnection, hostInfo[0], hostInfo[1], hostInfo[2],
+										hostInfo[3], hostInfo[4], creditCard);
+								System.out.println("Renter Account Created!");
+							} catch (SQLIntegrityConstraintViolationException e) {
+								System.err.println("User Account with that SIN already exists!" + e.getMessage());
+							}
+
+						} else if (input.equalsIgnoreCase("host")) {
+							try {
+								operations.createProfile(userConnection, hostInfo[0], hostInfo[1], hostInfo[2],
+										hostInfo[3], hostInfo[4]);
+								System.out.println("Host Account Created!");
+							} catch (SQLIntegrityConstraintViolationException e) {
+								System.err.println("User Account with that SIN already exists!" + e.getMessage());
+							}
 						}
-					case 4: // Select Renter Profile
-						System.out.print("Enter 0 to return, or a SIN for a renter profile: ");
-						String renterSIN = sc.next();
-						if (Integer.parseInt(renterSIN) == 0) {
-							break;
-						} else {
-							renterMenu();
-							// TODO: renter menu options
-							break;
+
+						break;
+					case 2: // Select Host/Renter Profile
+						System.out.print(
+								"Type 'host' to view all host profiles, 'renter' to view all renter profiles, anything else to exit: ");
+						input = sc.nextLine();
+						boolean exit = false;
+						if (input.equalsIgnoreCase("renter")) {
+							// Get all the renter profiles from the database, then display and allow user to
+							// select via index
+							ArrayList<ArrayList<String>> allRenters = queries.getRenter(userConnection);
+							this.printRenterResults(allRenters);
+							input = sc.nextLine();
+
+							while (!exit) {
+								System.out.print("Enter the number of the renter to select/login to, or '0' to exit: ");
+								input = sc.nextLine();
+								int renterIndex = 0;
+								try {
+									renterIndex = Integer.parseInt(input);
+									if (renterIndex > allRenters.size() || renterIndex < 0) {
+										System.err.println("Invalid index value!");
+									} else if (renterIndex == 0) {
+										exit = true;
+									} else {
+										// RUN THE RENTER MENU
+										RenterMenu renterMenu = new RenterMenu(allRenters.get(renterIndex - 1),
+												this.userConnection);
+										if (renterMenu.execute()) {
+											renterMenu.terminate();
+											exit = true;
+										}
+									}
+								} catch (NumberFormatException e) {
+									System.err.println("Invalid format value!");
+								}
+							}
+
+						} else if (input.equalsIgnoreCase("host")) {
+							// Get all the host profiles from the database, then display and allow user to
+							// select via index
+							ArrayList<ArrayList<String>> allHosts = queries.getHosts(userConnection);
+							this.printHostResults(allHosts);
+							while (!exit) {
+								System.out.print("Enter the number of the host to select/login to, or '0' to exit: ");
+								input = sc.nextLine();
+								int hostIndex = 0;
+								try {
+									hostIndex = Integer.parseInt(input);
+									if (hostIndex > allHosts.size() || hostIndex < 0) {
+										System.err.println("Invalid index value!");
+									} else if (hostIndex == 0) {
+										exit = true;
+									} else {
+										// RUN THE HOST MENU
+										HostMenu hostMenu = new HostMenu(allHosts.get(hostIndex - 1),
+												this.userConnection);
+										if (hostMenu.execute()) {
+											hostMenu.terminate();
+											exit = true;
+										}
+									}
+								} catch (NumberFormatException e) {
+									System.err.println("Invalid format value!");
+								}
+							}
+
 						}
-					case 5: // Print database schema
-						this.printSchema();
 						break;
-					case 6: // Print a table from the database
-						this.printColSchema();
+					case 3: // Add a Host or Renter Profile
+						System.out
+								.print("Enter the SIN number for the account to add a profile to, or 'exit' to exit: ");
+						input = sc.nextLine();
+						if (!input.equalsIgnoreCase("exit")) {
+							System.out.print("Do you wish to add a 'host' profile, or 'renter' profile: ");
+							String type = sc.nextLine();
+							if (type.equalsIgnoreCase("host")) {
+								try {
+									operations.makeHost(userConnection, input);
+								} catch (SQLIntegrityConstraintViolationException e) {
+									System.err.printf("Account with SIN: %s does not exist, or already have a host profile!", input);
+								}
+			
+							} else if (type.equalsIgnoreCase("renter")) {
+								try {
+									operations.deleteProfile(userConnection, input, false);
+								} catch (SQLIntegrityConstraintViolationException e) {
+									System.err.printf("Account with SIN: %s does not exist, or doesn't have a renter profile!", input);
+								}
+							}
+						}
 						break;
-					case 7:
+					case 4: // Delete a host or Renter Profile
+						System.out.print(
+								"Enter the SIN number for the account to delete a profile from, or 'exit' to exit: ");
+						input = sc.nextLine();
+						if (!input.equalsIgnoreCase("exit")) {
+							System.out.print("Do you wish to delete the 'host' profile, or 'renter' profile: ");
+							String type = sc.nextLine();
+							if (type.equalsIgnoreCase("host")) {
+								try {
+									operations.deleteProfile(userConnection, input, true);
+								} catch (SQLException e) {
+									System.err.printf("Account with SIN: %s does not exist, or doesn't have a host profile!", input);
+								}
+			
+							} else if (type.equalsIgnoreCase("renter")) {
+								try {
+									operations.deleteProfile(userConnection, input, false);
+								} catch (SQLException e) {
+									System.err.printf("Account with SIN: %s does not exist, or doesn't have a renter profile!", input);
+								}
+							}
+						}
+						break;
+					case 5:// Delete a User account and associated profiles
+						System.out.println(
+								"WARNING: This action removes a user account and all associated profiles to it!");
+						System.out.print(
+								"Enter the SIN number for the account to delete the User account for, or 'exit' to exit: ");
+						input = sc.nextLine();
+						if (!input.equalsIgnoreCase("exit")) {
+							try {
+								operations.deleteUser(userConnection, input);
+								System.out.println("Account has been deleted.");
+							} catch (SQLException e){
+								System.err.printf("Account with SIN %s does not exist!", input);
+							}
+						}
+						break;
+					case 6:
 						System.out.println("Report options coming soon");
 						break;
 					default:
@@ -155,18 +276,43 @@ public class CommandLineHandler {
 		}
 	}
 
+	private void printHostResults(ArrayList<ArrayList<String>> results) {
+		System.out.printf("Hosts: %-9s%-15s%-35s%-20s%-10s%n", "SIN", "Name", "Address", "Occupation", "DoB");
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+		for (int i = 0; i < results.size(); i++) {
+			System.out.printf("%-7d%-9s%-15s%-35s%-20s%-10s%n", i + 1, (results.get(i)).get(0), (results.get(i)).get(1),
+					(results.get(i)).get(2), (results.get(i)).get(3), (results.get(i)).get(4));
+		}
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+	}
+
+	private void printRenterResults(ArrayList<ArrayList<String>> results) {
+		System.out.printf("Renters: %-9s%-15s%-35s%-20s%-10s%-16%n", "SIN", "Name", "Address", "Occupation", "DoB",
+				"Credit Card");
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+		for (int i = 0; i < results.size(); i++) {
+			System.out.printf("%-9d%-9s%-15s%-35s%-20s%-10s%n", i + 1, (results.get(i)).get(0), (results.get(i)).get(1),
+					(results.get(i)).get(2), (results.get(i)).get(3), (results.get(i)).get(4), (results.get(i)).get(5));
+		}
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+	}
+
 	private String[] userInfo() {
 		String[] info = new String[5];
 		System.out.print("Enter your SIN: ");
-		info[0] = sc.next();
-		System.out.print("\nEnter your name: ");
-		info[1] = sc.next();
-		System.out.print("\nEnter your address: ");
-		info[2] = sc.next();
-		System.out.print("\nEnter your occupation: ");
-		info[3] = sc.next();
-		System.out.print("\nEnter your date of birth (DD/MM/YYYY): ");
-		info[4] = sc.next();
+		info[0] = sc.nextLine();
+		System.out.print("Enter your name: ");
+		info[1] = sc.nextLine();
+		System.out.print("Enter your address: ");
+		info[2] = sc.nextLine();
+		System.out.print("Enter your occupation: ");
+		info[3] = sc.nextLine();
+		System.out.print("Enter your date of birth (DD/MM/YYYY): ");
+		info[4] = sc.nextLine();
 		return info;
 	}
 
@@ -174,37 +320,12 @@ public class CommandLineHandler {
 	private static void menu() {
 		System.out.println("=========User MENU=========");
 		System.out.println("0. Exit.");
-		System.out.println("1. Create a Host Profile.");
-		System.out.println("2. Create a Renter Profile.");
-		System.out.println("3. Select a Host Profile.");
-		System.out.println("4. Select a Renter Profile.");
-		System.out.println("5. Print schema.");
-		System.out.println("6. Print table schema.");
-		System.out.println("7. View AirBnB report statistics.");
-		System.out.print("Choose one of the previous options [0-7]: ");
-	}
-
-	private static void renterMenu() {
-		System.out.println("=========Renter MENU=========");
-		System.out.println("0. Exit.");
-		System.out.println("1. View Reservations.");
-		System.out.println("2. Search for listings.");
-		System.out.println("3. Make a reservation.");
-		System.out.println("4. Cancel a reservation.");
-		System.out.println("5. Rate a listing.");
-		System.out.println("6. Rate a host.");
-		System.out.print("Choose one of the previous options [0-6]: ");
-	}
-
-	private static void hostMenu() {
-		System.out.println("=========Host MENU=========");
-		System.out.println("0. Exit.");
-		System.out.println("1. View Listings.");
-		System.out.println("2. Add a listing.");
-		System.out.println("3. Remove a listing.");
-		System.out.println("4. Cancel a reservation.");
-		System.out.println("5. Adjust the price of a listing.");
-		System.out.println("6. Rate a renter.");
+		System.out.println("1. Create an Account + Host/Renter Profile.");
+		System.out.println("2. Select/Login a Host/Renter Profile.");
+		System.out.println("3. Add a Host/Renter Profile.");
+		System.out.println("4. Delete a Host/Renter Profile.");
+		System.out.println("5. Delete a User Account (and associated profiles).");
+		System.out.println("6. View AirBnB report statistics.");
 		System.out.print("Choose one of the previous options [0-6]: ");
 	}
 
@@ -222,70 +343,4 @@ public class CommandLineHandler {
 		return cred;
 	}
 
-	// Function that handles the feature: "3. Print schema."
-	private void printSchema() {
-		ArrayList<String> schema = DBAPI.getSchema(this.userConnection);
-
-		System.out.println("");
-		System.out.println("------------");
-		System.out.println("Total number of tables: " + schema.size());
-		for (int i = 0; i < schema.size(); i++) {
-			System.out.println("Table: " + schema.get(i));
-		}
-		System.out.println("------------");
-		System.out.println("");
-	}
-
-	// Function that handles the feature: "4. Print table schema."
-	private void printColSchema() {
-		System.out.print("Table Name: ");
-		String tableName = sc.nextLine();
-		ArrayList<String> result = DBAPI.colSchema(userConnection, tableName);
-		System.out.println("");
-		System.out.println("------------");
-		System.out.println("Total number of fields: " + result.size() / 2);
-		for (int i = 0; i < result.size(); i += 2) {
-			System.out.println("-");
-			System.out.println("Field Name: " + result.get(i));
-			System.out.println("Field Type: " + result.get(i + 1));
-		}
-		System.out.println("------------");
-		System.out.println("");
-	}
-
-//	// Function that handles the feature: "2. Select a record."
-//	private void selectOperator() {
-//		String query = "";
-//		System.out.print("Issue the Select Query: ");
-//		query = sc.nextLine();
-//		query.trim();
-//		if (query.substring(0, 6).compareToIgnoreCase("select") == 0)
-//			sqlMngr.selectOp(query);
-//		else
-//			System.err.println("No select statement provided!");
-//	}
-//
-//	// Function that handles the feature: "1. Insert a record."
-//	private void insertOperator() {
-//		int rowsAff = 0;
-//		int counter = 0;
-//		String query = "";
-//		System.out.print("Table: ");
-//		String table = sc.nextLine();
-//		System.out.print("Comma Separated Columns: ");
-//		String cols = sc.nextLine();
-//		System.out.print("Comma Separated Values: ");
-//		String[] vals = sc.nextLine().split(",");
-//		// transform the user input into a valid SQL insert statement
-//		query = "INSERT INTO " + table + " (" + cols + ") VALUES(";
-//		for (counter = 0; counter < vals.length - 1; counter++) {
-//			query = query.concat("'" + vals[counter] + "',");
-//		}
-//		query = query.concat("'" + vals[counter] + "');");
-//		System.out.println(query);
-//		rowsAff = sqlMngr.insertOp(query);
-//		System.out.println("");
-//		System.out.println("Rows affected: " + rowsAff);
-//		System.out.println("");
-//	}
 }
