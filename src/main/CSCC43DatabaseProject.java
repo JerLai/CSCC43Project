@@ -20,11 +20,13 @@ public class CSCC43DatabaseProject {
 
 	public static void main(String[] args) throws SQLException {
 		// TODO Auto-generated method stub
-		//CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
-		//Connection connection = pro.createConnection();
+		// CSCC43DatabaseProject pro = new CSCC43DatabaseProject();
+		// Connection connection = pro.createConnection();
 		CommandLineHandler cmd = new CommandLineHandler();
-		if (cmd.startSession() && cmd.execute()) {
-			cmd.endSession();
+		if (cmd.startSession()) {
+			if (cmd.execute()) {
+				cmd.endSession();
+			}
 		}
 
 //		Calendar cal = Calendar.getInstance();
@@ -53,77 +55,70 @@ public class CSCC43DatabaseProject {
 //		
 //		HashMap<Integer, HashMap<String, Integer>> red = reports.wordCloud(connection);
 //		System.out.println(red);
-		//System.out.println(res);
-		
+		// System.out.println(res);
+
 		/*
-		 
-		// USAGE OF QUERIES 
-		 
-		Calendar cal = Calendar.getInstance();
-		cal.set(2020, 0, 3);
-		Date a = new Date(cal.getTime().getTime());
-		cal = Calendar.getInstance();
-		cal.set(2020, 0, 4);
-		Date b = new Date(cal.getTime().getTime());
-		//startFilter(Connection, boolean, String, boolean, double, double, double, boolean, String, boolean, Date, Date, boolean, double, double, boolean, String, int) 
-		ArrayList<HashMap<String, String>> data = queries.startFilter(connection, true, "MMM MMM", true, 100000.0, 69.0, 69.0, true, "london", true, a, b , true, 0.0, 70.0, false, "", 1);
-		System.out.println(data);
-		
-		
-		
-		// USAGE OF THE OPERATIONS
-		 
-		Calendar cal = Calendar.getInstance();
-		cal.set(2020, 0, 6);
-		Date a = new Date(cal.getTime().getTime());
-		cal = Calendar.getInstance();
-		cal.set(2020, 0, 8);
-		Date b = new Date(cal.getTime().getTime());
-		String pattern = "yyyy-MM-dd";
-		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
-		String date = formatter.format(a);
-		
-		
-		cal.set(2019, 11, 31);
-		Date s1 = new Date(cal.getTime().getTime());
-		
-		cal.set(2020, 0, 1);
-		Date e1 = new Date(cal.getTime().getTime());
-		
-		cal.set(2020, 0, 6);
-		Date s2 = new Date(cal.getTime().getTime());
-		
-		cal.set(2020, 0, 8);
-		
-		Date e2 = new Date(cal.getTime().getTime());
-		
-		//operations.bookListing(connection, "111", "1", a, b);
-		
-		//operations.createCalendar(connection, "1", s1.toString(), e1.toString(), "50");
-		//operations.createCalendar(connection, "1", s2.toString(), e2.toString(), "50");
-		
-		//operations.renterRemoveListing(connection, "1", a, b, "111", "1234", 50);
-		
-		//operations.hostUpdatePrice(connection, "1", "1234", s2, e2, "50.42");
-		
-		//operations.addComment(connection, "55", "111", "asdf");
-		
-		//operations.addRating(connection, "111", "yeet", "5", "1");
-		
-		operations.removeCalendar(connection, "1", a, b);
-		 * */
-		
+		 * 
+		 * // USAGE OF QUERIES
+		 * 
+		 * Calendar cal = Calendar.getInstance(); cal.set(2020, 0, 3); Date a = new
+		 * Date(cal.getTime().getTime()); cal = Calendar.getInstance(); cal.set(2020, 0,
+		 * 4); Date b = new Date(cal.getTime().getTime()); //startFilter(Connection,
+		 * boolean, String, boolean, double, double, double, boolean, String, boolean,
+		 * Date, Date, boolean, double, double, boolean, String, int)
+		 * ArrayList<HashMap<String, String>> data = queries.startFilter(connection,
+		 * true, "MMM MMM", true, 100000.0, 69.0, 69.0, true, "london", true, a, b ,
+		 * true, 0.0, 70.0, false, "", 1); System.out.println(data);
+		 * 
+		 * 
+		 * 
+		 * // USAGE OF THE OPERATIONS
+		 * 
+		 * Calendar cal = Calendar.getInstance(); cal.set(2020, 0, 6); Date a = new
+		 * Date(cal.getTime().getTime()); cal = Calendar.getInstance(); cal.set(2020, 0,
+		 * 8); Date b = new Date(cal.getTime().getTime()); String pattern =
+		 * "yyyy-MM-dd"; SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+		 * String date = formatter.format(a);
+		 * 
+		 * 
+		 * cal.set(2019, 11, 31); Date s1 = new Date(cal.getTime().getTime());
+		 * 
+		 * cal.set(2020, 0, 1); Date e1 = new Date(cal.getTime().getTime());
+		 * 
+		 * cal.set(2020, 0, 6); Date s2 = new Date(cal.getTime().getTime());
+		 * 
+		 * cal.set(2020, 0, 8);
+		 * 
+		 * Date e2 = new Date(cal.getTime().getTime());
+		 * 
+		 * //operations.bookListing(connection, "111", "1", a, b);
+		 * 
+		 * //operations.createCalendar(connection, "1", s1.toString(), e1.toString(),
+		 * "50"); //operations.createCalendar(connection, "1", s2.toString(),
+		 * e2.toString(), "50");
+		 * 
+		 * //operations.renterRemoveListing(connection, "1", a, b, "111", "1234", 50);
+		 * 
+		 * //operations.hostUpdatePrice(connection, "1", "1234", s2, e2, "50.42");
+		 * 
+		 * //operations.addComment(connection, "55", "111", "asdf");
+		 * 
+		 * //operations.addRating(connection, "111", "yeet", "5", "1");
+		 * 
+		 * operations.removeCalendar(connection, "1", a, b);
+		 */
+
 //		if (connection != null) {
 //			connection.close();
 //		}
 //		
 	}
 
-	Connection createConnection() throws SQLException{
+	Connection createConnection() throws SQLException {
 		Connection con = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con  = DriverManager.getConnection("jdbc:mysql://localhost/air_bnb", "root", "root");
+			con = DriverManager.getConnection("jdbc:mysql://localhost/air_bnb", "root", "root");
 			System.out.println("Database Connection Success");
 		} catch (ClassNotFoundException ex) {
 			Logger.getLogger(CSCC43DatabaseProject.class.getName()).log(Level.SEVERE, null, ex);

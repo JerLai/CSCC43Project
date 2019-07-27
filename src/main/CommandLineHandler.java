@@ -6,6 +6,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import main.dbsetup.DBAPI;
 import main.dbsetup.DBDriver;
 import main.menus.HostMenu;
@@ -37,7 +39,7 @@ public class CommandLineHandler {
 	 * @return if the connection was a success
 	 */
 	public boolean startSession() {
-		boolean success = true;
+		boolean success = false;
 		if (sc == null) {
 			sc = new Scanner(System.in);
 		}
@@ -47,8 +49,10 @@ public class CommandLineHandler {
 		try {
 			System.out.println("Enter the database and the connection credentials you were given proceed further.");
 			userConnection = DBDriver.dbConnect(this.getCredentials());
-		} catch (ClassNotFoundException e) {
-			success = false;
+			if (userConnection != null) {
+				success = true;
+			}
+		} catch (Exception e) {
 			System.err.println("Establishing connection triggered an exception!");
 			e.printStackTrace();
 			sc = null;
