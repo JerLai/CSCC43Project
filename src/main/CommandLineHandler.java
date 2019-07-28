@@ -421,6 +421,7 @@ public class CommandLineHandler {
 								}
 							} catch (SQLException e) {
 								System.err.println("An unexpected database error has occurred. Please try again.");
+								e.printStackTrace();
 								break;
 							}
 

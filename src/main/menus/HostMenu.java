@@ -71,9 +71,9 @@ public class HostMenu extends Menu {
 									int resIndex = 0;
 									System.out
 											.print("Enter the index of the listing to interact with or '0' to exit: ");
-									input = this.keyboard.nextLine();
+									String listingChoice = this.keyboard.nextLine();
 									try {
-										resIndex = Integer.parseInt(input);
+										resIndex = Integer.parseInt(listingChoice);
 										// Error handling
 										if (resIndex > listings.size() || resIndex < 0) {
 											System.err.println("Invalid index value!");
@@ -122,10 +122,10 @@ public class HostMenu extends Menu {
 													this.printCalendarForListing(calendar);
 													System.out.print(
 															"Enter the index of the availability to interact with, or '0' to exit: ");
-													input = this.keyboard.nextLine();
+													String indexOpt = this.keyboard.nextLine();
 													int availIndex = -1;
 													try {
-														availIndex = Integer.parseInt(input);
+														availIndex = Integer.parseInt(indexOpt);
 														if (availIndex > calendar.size() || availIndex < 0) {
 															System.err.println("Invalid index!");
 														} else if (availIndex == 0) {
@@ -174,6 +174,7 @@ public class HostMenu extends Menu {
 												} catch (SQLException e) {
 													System.err.println(
 															"Error has occurred while retrieving the calendar, please try again");
+													e.printStackTrace();
 												}
 											} else {
 												exit = true;
@@ -403,13 +404,12 @@ public class HostMenu extends Menu {
 	}
 
 	private void printCalendarForListing(ArrayList<HashMap<String, String>> calendar) {
-		System.out.printf("Calendar: %-10s%-15s%-35s%-20s%-10s%n", "listingID", "renterSIN", "hostSIN", "startDate",
+		System.out.printf("Calendar: %-10s%-10s%-11s%-11s%n", "listingID", "hostSIN", "startDate",
 				"endDate");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < calendar.size(); i++) {
-			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, (calendar.get(i)).get("listingID"),
-					(calendar.get(i)).get("renterSIN"), (calendar.get(i)).get("hostSIN"),
+			System.out.printf("%-10d%-10s%-10s%-11s%-11s%n", i + 1, (calendar.get(i)).get("listingID"), (calendar.get(i)).get("hostSIN"),
 					(calendar.get(i)).get("startDate"), (calendar.get(i)).get("endDate"));
 		}
 		System.out
