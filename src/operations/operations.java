@@ -92,11 +92,38 @@ public class operations {
 
 
 
-	public static void createListing(Connection connection, String listingID, String SIN, String types, String longitude, String latitude, String city, String country, String address, String postalCode) throws SQLException {
+	public static void createListing(Connection connection, String SIN, String types, String longitude, String latitude, String city, String country, String address, String postalCode) throws SQLException {
 
 		query = "INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('"+ SIN + "', '" + types+"', '" + longitude + "', '" + latitude + "', '" + city + "', '" + country + "', '" + address + "', '" + postalCode + "');";
 		DBAPI.sendQuery(connection, query);
 
+	}
+	
+	private static boolean checkDates(Connection connection, String listingID, Date start, Date end) throws SQLException {
+	
+		query = "SELECT startDate, endDate FROM calendar WHERE calendar.listingID = '"+listingID+"'";
+		ResultSet data = DBAPI.getDataByQuery(connection, query);
+		
+		while (data.next()) {
+			Date eStart = data.getDate("startDate");
+			Date eEnd = data.getDate("endDate");
+			// 4 scenarios
+			if (eStart.compareTo(start) <= 0 && eEnd.compareTo(end) <= 0 && start.compareTo(eEnd) <= 0) {
+				return true;
+			}
+			else if (eStart.compareTo(start) >= 0 && eEnd.compareTo(end) <= 0) {
+				return true;
+			}
+			else if (eStart.compareTo(start) >= 0 && eEnd.compareTo(end) >= 0 && eStart.compareTo(end) <= 0) {
+				return true;
+			}
+			else if (eStart.compareTo(start) <= 0 && eEnd.compareTo(end) >= 0) {
+				return true;
+			}
+			
+			
+		}
+		return false;
 	}
 
 	public static void createCalendar(Connection connection, String listingID, String startDate, String endDate, String price) throws SQLException {
@@ -284,6 +311,11 @@ public class operations {
 			// the start is after the end date somehow
 			//give an error
 			System.out.println("Start Date has to be after End Date, try again.");
+			return;
+		}
+		
+		if (checkDates(connection, listingID, start, end)) {
+			System.out.println("New date cannot overlap other calendar reservations. Please try again with other dates");
 			return;
 		}
 		
