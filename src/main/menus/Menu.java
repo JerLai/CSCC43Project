@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class Menu {
-	protected static ArrayList<String> credentials;
-	protected static Connection connection;
-	protected static Scanner keyboard;
+	protected ArrayList<String> credentials;
+	protected Connection connection;
+	protected Scanner keyboard;
 
 	public Menu (ArrayList<String> credentials, Connection connection) {
 		this.credentials = credentials;

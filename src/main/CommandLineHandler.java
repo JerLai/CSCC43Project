@@ -142,7 +142,6 @@ public class CommandLineHandler {
 							// select via index
 							ArrayList<ArrayList<String>> allRenters = queries.getRenter(userConnection);
 							this.printRenterResults(allRenters);
-							input = sc.nextLine();
 
 							while (!exit) {
 								System.out.print("Enter the number of the renter to select/login to, or '0' to exit: ");
@@ -315,7 +314,7 @@ public class CommandLineHandler {
 		info[2] = sc.nextLine();
 		System.out.print("Enter your occupation: ");
 		info[3] = sc.nextLine();
-		System.out.print("Enter your date of birth (DD/MM/YYYY): ");
+		System.out.print("Enter your date of birth (YYYY-MM-DD): ");
 		info[4] = sc.nextLine();
 		return info;
 	}
