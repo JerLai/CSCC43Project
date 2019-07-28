@@ -418,10 +418,10 @@ public class queries {
 		return result;
 	}
 	
-    public static ArrayList<HashMap<String, String>> showCalendar(Connection connection, String listingID) throws SQLException{
+    public static ArrayList<HashMap<String, String>> showCalendar(Connection connection, String listingID, String SIN) throws SQLException{
         ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
         HashMap<String, String> entry;
-        query = "Select * FROM calendar,listing WHERE listing.listingID=calendar.listingID";
+        query = "Select * FROM calendar,listing WHERE listing.listingID=calendar.listingID AND listing.listingID='"+listingID+"' AND listing.hostSIN='"+SIN+"'";
         
         ResultSet data = DBAPI.getDataByQuery(connection, query);
         while (data.next()) {

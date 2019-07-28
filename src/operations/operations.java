@@ -220,6 +220,11 @@ public class operations {
 			}
 		}
 	}
+	
+	   public static void addAmenity(Connection connection, String dining, String safety, String facilities, String guest, String logistics, String notIncluded, String bed, String outdoor, String basic, String listingID) throws SQLException {
+	        query = "INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('"+listingID+"','"+dining+"', '"+safety+"', '"+facilities+"', '"+logistics+"', '"+notIncluded+"', '"+bed+"', '"+outdoor+"', '"+basic+"')";
+	        DBAPI.sendQuery(connection, query);
+	    }
 
 	public static void hostRemoveListing(Connection connection, String listingID, Date start, Date end, String SIN, String hostSIN) throws SQLException {
 		query = "DELETE FROM reservations WHERE listingID='"+listingID+"' AND startDate='"+start.toString()+"' AND endDate='" + end.toString() +"' AND renterSIN='"+SIN+"';";
