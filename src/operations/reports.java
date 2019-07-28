@@ -13,7 +13,16 @@ import main.dbsetup.DBAPI;
 public class reports {
 
 	private static String query;
+
 	
+	/**
+	 * Query to provide total number of bookings in a specific date range by city
+	 * @param connection
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> bookingsDateCity(Connection connection, Date start, Date end) throws SQLException{
 		query = "SELECT city, COUNT(*) as COUNT FROM listing, calendar WHERE listing.listingID = calendar.listingID AND startDate>='"+start.toString() + "' AND endDate<='"+end.toString()+"' GROUP BY city;";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
@@ -27,7 +36,15 @@ public class reports {
 		}
 		return entry;
 	}
-	
+	/**
+	 * Query to provide total number of bookings in a specific date range by ZIP code within a city
+	 * @param connection
+	 * @param city
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> bookingsDatePostal(Connection connection, String city, Date start, Date end) throws SQLException{
 		query = "SELECT postalCode, COUNT(*) as COUNT FROM listing, calendar WHERE listing.listingID = calendar.listingID AND city LIKE '"+city+"' AND startDate>='"+start.toString() + "' AND endDate<='"+end.toString()+"' GROUP BY postalCode;";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
@@ -41,7 +58,14 @@ public class reports {
 		}
 		return entry;
 	}
-	
+
+	/**
+	 * Query to provide the total number of listings for a country, or country and city, or country and city and postal code
+	 * @param connection
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> numListings (Connection connection, int type) throws SQLException{
 		HashMap<String, Integer> data = new HashMap<String, Integer>();
 		ResultSet result;
@@ -76,7 +100,14 @@ public class reports {
 		return data;
 		
 	}
-	
+
+	/**
+	 * Query to rank hosts by total number of listings they have per country, and optionally by city
+	 * @param connection
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 */
 	public static  HashMap<String, ArrayList<String>> hostRanking(Connection connection, int type) throws SQLException{
 		ArrayList<HashMap<String, Integer>> data = new ArrayList<HashMap<String, Integer>>();
 		HashMap<String, HashMap<String, Integer>> res = new HashMap<String, HashMap<String, Integer>>();
@@ -133,7 +164,14 @@ public class reports {
 		
 		return result;
 	}
-	
+
+	/**
+	 * Query to identify hosts that have more than 10% of the total number of listings in a country
+	 * @param connection
+	 * @param country
+	 * @return
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> commercialHosts(Connection connection, String country) throws SQLException{
 		query = "SELECT users.name as NAME FROM host H, users WHERE (H.SIN=users.SIN) AND (SELECT COUNT(*) *0.1 FROM listing WHERE country='"+country+"')  < (SELECT COUNT(*) FROM listing WHERE country='"+country+"' AND listing.hostSIN=H.SIN)";
 		//query = "(SELECT COUNT(*)*1.0 *0.1 as COUNT FROM listing WHERE country='"+country+"')";
@@ -152,6 +190,14 @@ public class reports {
 		
 		return row;
 	}
+
+	/**
+	 * Query to identify any hosts that have more than 10% of the total number of listings in a city
+	 * @param connection
+	 * @param city
+	 * @return
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> commercialHostsCity(Connection connection, String city) throws SQLException{
 		query = "SELECT users.name as NAME FROM host H, users WHERE (H.SIN=users.SIN) AND (SELECT COUNT(*) *0.1 FROM listing WHERE city='"+city+"')  < (SELECT COUNT(*) FROM listing WHERE city='"+city+"' AND listing.hostSIN=H.SIN)";
 		//query = "(SELECT COUNT(*)*1.0 *0.1 as COUNT FROM listing WHERE country='"+country+"')";
@@ -169,7 +215,15 @@ public class reports {
 		
 		return row;
 	}
-	
+
+	/**
+	 * Query to rank the renters by the number of bookings they have made in a time frame
+	 * @param connection
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> rentersRanking(Connection connection, Date start, Date end) throws SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		// query = "SELECT name FROM user, history, listing WHERE user.SIN=history.SIN AND listing.listingID=history.listingID ORDER BY ";
@@ -184,7 +238,15 @@ public class reports {
 		
 		return result;
 	}
-	
+
+	/**
+	 * Query to rank the renters by the number of bookings they have made in time frame per city
+	 * @param connection
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, ArrayList<String>> rentersRankingCity(Connection connection, Date start, Date end) throws SQLException{
 		HashMap<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
 		// query = "SELECT name FROM user, history, listing WHERE user.SIN=history.SIN AND listing.listingID=history.listingID ORDER BY ";
@@ -211,6 +273,13 @@ public class reports {
 		return result;
 	}
 	
+	/**
+	 * Query to find the hosts with the largest number of cancellations within a year
+	 * @param connection
+	 * @param start
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> largestHost(Connection connection, Date start) throws SQLException{
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled where U.SIN=cancelled.hostSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.hostSIN AND who='host')>all(SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND users.SIN=cancelled.hostSIN AND who='host' GROUP BY user.name)";
@@ -222,6 +291,13 @@ public class reports {
 		
 		return result;
 	}
+	/**
+	 * Query to find the renters with the largest number of cancellations within a year
+	 * @param connection
+	 * @param start
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> largestRenter(Connection connection, Date start) throws SQLException{
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled where U.SIN=cancelled.renterSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.renterSIN AND who='renter')>all(SELECT COUNT(*) FROM user,cancelled WHERE startDate > '\"+start+\"' AND user.SIN=cancelled.renterSIN AND who='renter' GROUP BY user.name)";
@@ -232,7 +308,13 @@ public class reports {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * Query to create a word cloud of the most popular noun phrases associated with a listing
+	 * @param connection
+	 * @return
+	 * @throws SQLException
+	 */
 	public static HashMap<Integer, HashMap<String, Integer>> wordCloud(Connection connection) throws SQLException{
 		HashMap<String, Integer> eachListing = new HashMap<String, Integer>();
 		HashMap<Integer, HashMap<String, Integer>> result = new HashMap<Integer, HashMap<String, Integer>>();

@@ -1,19 +1,19 @@
 package main;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
-
-import main.dbsetup.DBAPI;
 import main.dbsetup.DBDriver;
 import main.menus.HostMenu;
 import main.menus.RenterMenu;
 import operations.operations;
 import operations.queries;
+import operations.reports;
 
 /**
  * handles Command Line Handler to handle running this java program outside an
@@ -209,14 +209,18 @@ public class CommandLineHandler {
 								try {
 									operations.makeHost(userConnection, input);
 								} catch (SQLIntegrityConstraintViolationException e) {
-									System.err.printf("Account with SIN: %s does not exist, or already have a host profile!", input);
+									System.err.printf(
+											"Account with SIN: %s does not exist, or already have a host profile!",
+											input);
 								}
-			
+
 							} else if (type.equalsIgnoreCase("renter")) {
 								try {
 									operations.deleteProfile(userConnection, input, false);
 								} catch (SQLIntegrityConstraintViolationException e) {
-									System.err.printf("Account with SIN: %s does not exist, or doesn't have a renter profile!", input);
+									System.err.printf(
+											"Account with SIN: %s does not exist, or doesn't have a renter profile!",
+											input);
 								}
 							}
 						}
@@ -232,14 +236,18 @@ public class CommandLineHandler {
 								try {
 									operations.deleteProfile(userConnection, input, true);
 								} catch (SQLException e) {
-									System.err.printf("Account with SIN: %s does not exist, or doesn't have a host profile!", input);
+									System.err.printf(
+											"Account with SIN: %s does not exist, or doesn't have a host profile!",
+											input);
 								}
-			
+
 							} else if (type.equalsIgnoreCase("renter")) {
 								try {
 									operations.deleteProfile(userConnection, input, false);
 								} catch (SQLException e) {
-									System.err.printf("Account with SIN: %s does not exist, or doesn't have a renter profile!", input);
+									System.err.printf(
+											"Account with SIN: %s does not exist, or doesn't have a renter profile!",
+											input);
 								}
 							}
 						}
@@ -254,13 +262,153 @@ public class CommandLineHandler {
 							try {
 								operations.deleteUser(userConnection, input);
 								System.out.println("Account has been deleted.");
-							} catch (SQLException e){
+							} catch (SQLException e) {
 								System.err.printf("Account with SIN %s does not exist!", input);
 							}
 						}
 						break;
 					case 6:
-						System.out.println("Report options coming soon");
+						int option = -1;
+						do {
+							try {
+								Date start = null;
+								Date end = null;
+								String city = null;
+								String country = null;
+								reports();
+								option = sc.nextInt();
+								switch (option) {
+								case 1: // per city
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									System.out.print("Enter an end date (YYYY-MM-DD): ");
+									end = Date.valueOf(sc.nextLine());
+									HashMap<String, Integer> totalNumBkCity = reports
+											.bookingsDateCity(this.userConnection, start, end);
+									System.out.println("Report on Number of Bookings in a Date Range, Grouped by City");
+									System.out.printf("%-20s|%-15s%n", "City", "Bookings");
+									this.printHashMapStringInt(totalNumBkCity);
+									break;
+								case 2: // per zip code
+									System.out.print("Enter a city: ");
+									city = sc.nextLine();
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									System.out.print("Enter an end date (YYYY-MM-DD): ");
+									end = Date.valueOf(sc.nextLine());
+									HashMap<String, Integer> totalNumBkPostal = reports
+											.bookingsDatePostal(this.userConnection, city, start, end);
+									System.out.println("Report on Number of Bookings in a Date Range, Grouped by Postal Code per City");
+									System.out.printf("%-20s|%-15s%n", "Postal Code", "Bookings");
+									this.printHashMapStringInt(totalNumBkPostal);
+									break;
+								case 3: // total number listings for 1, 2, 3
+									System.out.print(
+											"Type 0 for country, 1 for country and city, 2 for country, city and postal code: ");
+									option = sc.nextInt();
+									HashMap<String, Integer> totalListings = reports.numListings(this.userConnection,
+											option);
+									System.out.print("Report on Number of Listings, Grouped by ");
+									if (option == 0) {
+										System.out.print("Country\n");
+										System.out.printf("%-50s|%-10s%n", "Country", "Bookings");
+									} else if (option == 1) {
+										System.out.print("Country/City\n");
+										System.out.printf("%-50s|%-10s%n", "Country/City", "Bookings");
+									} else if (option == 2) {
+										System.out.print("Country/City/Postal Code\n");
+										System.out.printf("%-50s|%-10s%n", "Country/City/Postal Code", "Bookings");
+									}
+									this.printHashMapStringInt(totalListings);
+									break;
+								case 4: // host ranking
+									System.out.print("Type 0 for country, 1 for city: ");
+									option = sc.nextInt();
+									HashMap<String, ArrayList<String>> hostRanks = reports
+											.hostRanking(this.userConnection, option);
+									System.out.print("Report on host rankings by total number listings owned per ");
+									if (option == 0) {
+										System.out.print("Country\n");
+										System.out.printf("%-20s|%-20s%n", "Country", "Listings");
+									} else if (option == 1) {
+										System.out.print("City\n");
+										System.out.printf("%-20s|%-20s%n", "City", "Listings");
+									}
+									this.printHashMapStringArrayListString(hostRanks);
+									break;
+								case 5: // commercial hosts in country
+									System.out.print("Enter the country to find potential commerical hosts for: ");
+									country = sc.nextLine();
+									ArrayList<String> maybeCommerce = reports.commercialHosts(this.userConnection,
+											country);
+									System.out.println("Report on Hosts that own more than 10% of all listings in a country");
+									System.out.printf("%-20s%n", "Host");
+									this.printArrayListString(maybeCommerce);
+									break;
+								case 6: // commercial hosts in city
+									System.out.print("Enter the city to find potential commerical hosts for: ");
+									city = sc.nextLine();
+									ArrayList<String> maybeCommerceCity = reports
+											.commercialHostsCity(this.userConnection, city);
+									System.out.println("Report on Hosts that own more than 10% of all listings in a city");
+									System.out.printf("%-20s%n", "Host");
+									this.printArrayListString(maybeCommerceCity);
+									break;
+								case 7: // renters ranking in time frame
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									System.out.print("Enter an end date (YYYY-MM-DD): ");
+									end = Date.valueOf(sc.nextLine());
+									ArrayList<String> renterRanks = reports.rentersRanking(this.userConnection, start,
+											end);
+									System.out.printf("Report on renter ranks on number of bookings made between %s and %s%n", start.toString(), end.toString());
+									System.out.printf("%-20s%n", "Host");
+									this.printArrayListString(renterRanks);
+									break;
+								case 8: // renters ranking city
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									System.out.print("Enter an end date (YYYY-MM-DD): ");
+									end = Date.valueOf(sc.nextLine());
+									HashMap<String, ArrayList<String>> renterRanksCity = reports
+											.rentersRankingCity(this.userConnection, start, end);
+									System.out.printf("Report on renter ranks on number of bookings made per city who have made at least 2 bookings");
+									System.out.printf("%-20s|%-20s|%-20s", "City", "Name", "Bookings");
+									this.printHashMapStringArrayListString(renterRanksCity);
+									break;
+								case 9: // largest num cancellations host
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									HashMap<String, Integer> hostCancels = reports.largestHost(this.userConnection,
+											start);
+									System.out.println("Report on Largest Number of Cancellations for a Host in a year from a start date");
+									System.out.printf("%-20s|%-15s%n", "Host", "Cancellations");
+									this.printHashMapStringInt(hostCancels);
+									break;
+								case 10: // largest num cancellations renter
+									System.out.print("Enter a start date (YYYY-MM-DD): ");
+									start = Date.valueOf(sc.nextLine());
+									HashMap<String, Integer> renterCancels = reports.largestRenter(this.userConnection,
+											start);
+									System.out.println("Report on Largest Number of Cancellations for a Renter in a year from a start date");
+									System.out.printf("%-20s|%-15s%n", "Renter", "Cancellations");
+									this.printHashMapStringInt(renterCancels);
+									break;
+								case 11: // Word Cloud
+									System.out.println("Here is the breakdown of the word clouds for the entries:");
+									HashMap<Integer, HashMap<String, Integer>> wordCloudRes = reports
+											.wordCloud(this.userConnection);
+									this.printWordCloud(wordCloudRes);
+									break;
+								default:
+									break;
+								}
+							} catch (SQLException e) {
+								System.err.println("An unexpected database error has occurred. Please try again.");
+								break;
+							}
+
+						} while (option != 0);
 						break;
 					default:
 						break;
@@ -276,6 +424,43 @@ public class CommandLineHandler {
 			System.out.println("Connection could not been established! Bye!");
 			System.out.println("");
 			return false;
+		}
+	}
+
+	private void printHashMapStringInt(HashMap<String, Integer> results) {
+		System.out.println("------------------------------------------------------------");
+		for (String strKey : results.keySet()) {
+			System.out.printf("%-50s|%-10d%n", strKey, results.get(strKey));
+		}
+		System.out.println("------------------------------------------------------------");
+	}
+
+	private void printHashMapStringArrayListString(HashMap<String, ArrayList<String>> results) {
+		System.out.println("------------------------------------------------------------");
+		for (String strKey : results.keySet()) {
+			System.out.printf("%-20s", strKey);
+			for (int i = 0; i < results.get(strKey).size(); i++) {
+				System.out.printf("|%-20s", results.get(strKey).get(i));
+			}
+			System.out.print("\n");
+			System.out.println("------------------------------------------------------------");
+		}
+	}
+
+	private void printArrayListString(ArrayList<String> results) {
+		for(int i = 0; i < results.size(); i++) {
+			System.out.printf("%-20s%n", results.get(i));
+		}
+	}
+
+	private void printWordCloud(HashMap<Integer, HashMap<String, Integer>> results) {
+		System.out.printf("%-10s|%-30s|%-5s", "ListingID", "Message", "Occurrences");
+		System.out.println("------------------------------------------------------------");
+		for (Integer listingID : results.keySet()) {
+			for (String nounPhrase : results.get(listingID).keySet()) {
+				System.out.printf("%-10d|%-30s|%-5d%n", listingID, nounPhrase, results.get(listingID).get(nounPhrase));
+			}
+			System.out.println("------------------------------------------------------------");
 		}
 	}
 
@@ -330,6 +515,25 @@ public class CommandLineHandler {
 		System.out.println("5. Delete a User Account (and associated profiles).");
 		System.out.println("6. View AirBnB report statistics.");
 		System.out.print("Choose one of the previous options [0-6]: ");
+	}
+
+	// Print menu options
+	private static void reports() {
+		System.out.println("=========MyBnB Report Statistics=========");
+		System.out.println("0. Exit.");
+		System.out.println("1. Total Number of Bookings in a Date Range per City");
+		System.out.println("2. Total Number of Bookings in a Date Range in a City per ZIP code");
+		System.out.println(
+				"3. Total Number of Listings for a (Country/Country and City/Country and City and Postal Code)");
+		System.out.println("4. Host Rankings by Number of Listings per Country (optionally City)");
+		System.out.println("5. Potential Commerical Hosts by Country");
+		System.out.println("6. Potential Commerical Hosts by City");
+		System.out.println("7. Renter Rankings by Number of Bookings made within a time period");
+		System.out.println("8. Renter Rankings by Number of Bookings made in a year per City (minimum of 2 bookings)");
+		System.out.println("9. Hosts with the largest number of Cancellations in a year");
+		System.out.println("10. Renters with the largest number of Cancellations in a year");
+		System.out.println("11. Word cloud statistics for listing comments per message and listing");
+		System.out.print("Choose one of the previous options [0-11]: ");
 	}
 
 	// Called during the initialization of an instance of the current class
