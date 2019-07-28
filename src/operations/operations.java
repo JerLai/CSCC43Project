@@ -38,7 +38,6 @@ public class operations {
 		//renter
 		query = "INSERT INTO renter(SIN, creditCard) VALUES('"+SIN+"','"+creditCard+"');";
 		DBAPI.sendQuery(connection, query);
-
 	}
 
 	public static void makeHost(Connection connection, String SIN) throws SQLException {
@@ -120,6 +119,7 @@ public class operations {
 		if (start.compareTo(end) > 0){
 			// the start is after the end date somehow
 			//give an error
+			System.out.println("Start Date has to be after End Date, try again.");
 			return;
 		}
 		query = "SELECT * FROM listing LEFT JOIN calendar ON listing.listingID = calendar.listingID WHERE listing.listingID="+listingID+";";
@@ -132,7 +132,7 @@ public class operations {
 			System.out.println();
 			if (setStart.compareTo(start) < 0 && setEnd.compareTo(end) > 0 && !start.toString().equals(setStart.toString()) && !end.toString().equals(setEnd.toString()) ){
 				// split the time into 2
-				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate) VALUES('"+listingID+"','"+SIN+"','"+start.toString()+"','"+end.toString()+"');";
+				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('"+listingID+"','"+SIN+"','"+start.toString()+"','"+end.toString()+"', '" + price+"')";
 				DBAPI.sendQuery(connection, query);
 
 				query = "UPDATE calendar SET endDate='" + start + "'  WHERE startDate='"+setStart+ "' AND listingID="+listingID+";";
@@ -141,7 +141,6 @@ public class operations {
 				query = "INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('"+listingID+"','"+end+"','"+setEnd+"','"+price+"');";
 				DBAPI.sendQuery(connection, query);
 
-
 				query = "INSERT INTO history(hostSIN, renterSIN, listingID, startDate, endDate) VALUES ('"+Integer.toString(data.getInt("hostSIN"))+"', '"+SIN+"', '"+ listingID + "', '"+start.toString() + "', '" +end+"');";
 				DBAPI.sendQuery(connection, query);
 
@@ -149,7 +148,8 @@ public class operations {
 			}
 			// entire duration
 			else if (start.toString().equals(setStart.toString()) && end.toString().equals(setEnd.toString())){
-				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate) VALUES('"+listingID+"','"+SIN+"','"+start+"','"+end+"');";
+				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('"+listingID+"','"+SIN+"','"+start.toString()+"','"+end.toString()+"', '" + price+"')";
+				
 				DBAPI.sendQuery(connection, query);
 
 				query = "DELETE FROM calendar WHERE listingID='"+listingID+"' AND startDate='"+setStart+"';";
@@ -165,7 +165,7 @@ public class operations {
 			// start on date, end in middle
 			else if (start.toString().equals(setStart.toString()) && setEnd.compareTo(end) > 0){
 				// session starts at the beginning
-				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate) VALUES('"+listingID+"','"+SIN+"','"+start+"','"+end+"');";
+				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('"+listingID+"','"+SIN+"','"+start.toString()+"','"+end.toString()+"', '" + price+"')";
 				DBAPI.sendQuery(connection, query);
 
 				query = "UPDATE calendar SET startDate='"+end.toString() + "' WHERE startDate='"+setStart+ "' AND listingID='"+listingID+"';";
@@ -178,7 +178,7 @@ public class operations {
 			else if (setStart.compareTo(start) < 0  && end.toString().equals(setEnd.toString())){
 				// start in middle, ends at end
 
-				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate) VALUES('"+listingID+"','"+SIN+"','"+start+"','"+end+"');";
+				query = "INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('"+listingID+"','"+SIN+"','"+start.toString()+"','"+end.toString()+"', '" + price+"')";
 				DBAPI.sendQuery(connection, query);
 
 				query = "UPDATE calendar SET endDate='"+start.toString() + "' WHERE startDate='"+setStart+ "' AND listingID='"+listingID+"';";
@@ -279,6 +279,14 @@ public class operations {
 	}
 	
 	public static void updateTime(Connection connection, String listingID, Date start, Date end, Date newStart, Date newEnd) throws SQLException {
+		
+		if (start.compareTo(end) > 0){
+			// the start is after the end date somehow
+			//give an error
+			System.out.println("Start Date has to be after End Date, try again.");
+			return;
+		}
+		
 		query = "UPDATE calendar SET startDate='"+newStart+"', endDate='"+newEnd+"' WHERE startDate='"+start+"' AND endDate='"+end+"' AND listingID='"+listingID+"'";
 		DBAPI.sendQuery(connection, query);
 	}

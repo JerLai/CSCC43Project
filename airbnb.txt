@@ -1,0 +1,100 @@
+DROP DATABASE IF EXISTS air_bnb;
+CREATE DATABASE air_bnb;
+USE air_bnb;
+
+CREATE TABLE listing (
+  listingID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  hostSIN INT(9) NOT NULL,
+  type CHAR(10) NOT NULL,
+  longitude DOUBLE NOT NULL,
+  latitude DOUBLE NOT NULL,
+  city VARCHAR(25) NOT NULL,
+  country VARCHAR(25) NOT NULL,
+  address VARCHAR(35) NOT NULL,
+  postalCode CHAR(10) NOT NULL
+);
+
+CREATE TABLE users (
+  SIN INT(9) NOT NULL PRIMARY KEY,
+  name VARCHAR(15) NOT NULL,
+  address VARCHAR(35) NOT NULL,
+  occupation CHAR(20) NOT NULL,
+  DoB DATE NOT NULL
+);
+
+CREATE TABLE amenities (
+  listingID INT(10) NOT NULL,
+  dining CHAR(10) NOT NULL,
+  safetyFeatures CHAR(10) NOT NULL,
+  facilities CHAR(10) NOT NULL,
+  guestAccess CHAR(10) NOT NULL,
+  logistics CHAR(20) NOT NULL,
+  notIncluded CHAR(20) NOT NULL,
+  bedAndBath TINYINT(1) NOT NULL,
+  outdoor TINYINT(1) NOT NULL,
+  basic TINYINT(1) NOT NULL,
+  FOREIGN KEY (listingID) REFERENCES listing(listingID)
+);
+
+CREATE TABLE calendar (
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  price DOUBLE NOT NULL,
+  PRIMARY KEY (listingID, startDate),
+  FOREIGN KEY (listingID) REFERENCES listing(listingID)
+);
+
+CREATE TABLE cancelled (
+  hostSIN INT(9) NOT NULL,
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  PRIMARY KEY (listingID, startDate),
+  FOREIGN KEY (listingID, startDate) REFERENCES calendar(listingID, startDate)
+);
+
+CREATE TABLE history (
+  historyID INT(10) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  hostSIN INT(9) NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL
+);
+
+CREATE TABLE host (
+  SIN INT(9) NOT NULL,
+  FOREIGN KEY (SIN) REFERENCES users (SIN)
+);
+
+CREATE TABLE listingrating (
+  ratingID INT(10) NOT NULL PRIMARY KEY,
+  listingID INT(10) NOT NULL,
+  fromSIN INT(9) NOT NULL,
+  rating DOUBLE NOT NULL,
+  message TEXT
+);
+
+CREATE TABLE renter (
+  SIN INT(9) NOT NULL,
+  creditCard INT(16) NOT NULL,
+  FOREIGN KEY (SIN) REFERENCES users (SIN)
+);
+
+CREATE TABLE reservations (
+  listingID INT(10) NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  endDate DATE NOT NULL,
+  startDate DATE NOT NULL,
+  PRIMARY KEY (listingID, startDate),
+  FOREIGN KEY (listingID, startDate) REFERENCES calendar(listingID, startDate)
+);
+
+CREATE TABLE usercomments (
+  commentID INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  toSIN INT(9) NOT NULL,
+  fromSIN INT(9) NOT NULL,
+  message TEXT NOT NULL
+);

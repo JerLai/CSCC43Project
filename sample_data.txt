@@ -1,0 +1,64 @@
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('942394552', 'John Mac', '24 Willows Circle, Toronto, Canada', 'Pharmacist', '1982-03-21');
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('812546355', 'Steve Chase', '132 Lawn Gate Ave, Toronto Canada', 'Carpenter', '1979-10-01');
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('823881472', 'Jesse Siles', '3 Red Field St, Toronto Canada', 'Dentist', '1987-04-13');
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('729482370', 'Danny Patron', '71 Cloverson Cresent, Toronto Canada', 'Manager', '1985-02-03');
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('719924344', 'Miranda Ellison', '45 Banes St, London Canada', 'Teacher', '1966-08-30');
+INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('733039854', 'Paul Gibon', '1 Oakway Drive', 'Actor', '1972-11-04');
+
+INSERT INTO host(SIN) VALUES('942394552');
+INSERT INTO host(SIN) VALUES('812546355');
+INSERT INTO host(SIN) VALUES('823881472');
+INSERT INTO host(SIN) VALUES('729482370');
+
+INSERT INTO renter(SIN, creditCard) VALUES('729482370', '1499022831847709');
+INSERT INTO renter(SIN, creditCard) VALUES('719924344', '4755129384710390');
+INSERT INTO renter(SIN, creditCard) VALUES('733039854', '3382918940029182');
+
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('1', '942394552', 'appartment', '43.6529', '79.3840', 'Toronto', 'Canada', '41 Maple Tree Ave', 'M4RL22');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('2', '942394552', 'appartment', '43.6539', '79.3838', 'Toronto', 'Canada', '5 Starway St', 'M4RLR2');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('3', '942394552', 'appartment', '43.6519', '79.3824', 'Toronto', 'Canada', '62 Taylor Circle', 'M34MR5');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('4', '942394552', 'condo', '43.6520', '79.3834', 'Toronto', 'Canada', '55 Gileon Circle', 'M34MRR');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('5', '942394552', 'condo', '43.6511', '79.3820', 'Toronto', 'Canada', '244 Brave St', 'M41R2R');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('6', '942394552', 'condo', '43.6526', '79.3836', 'Toronto', 'Canada', '25 Mardov Circle', 'M3SP3S');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('7', '942394552', 'condo', '43.6529', '79.3814', 'Toronto', 'Canada', '7 Evergreen Ave', 'M4HP22');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('8', '942394552', 'detached', '43.6527', '79.3832', 'Toronto', 'Canada', '72 Malory Diner St', 'MM2R2P');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('9', '942394552', 'bungalow', '43.6523', '79.3834', 'Toronto', 'Canada', '15 Wurst Cresent', 'M47LLR');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('10', '942394552', 'bungalow', '43.6518', '79.3831', 'Toronto', 'Canada', '691 Alison Drive', 'M12M1M');
+
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('11', '812546355', 'semi-detached', '43.6511', '79.3825', 'Toronto', 'Canada', '32 Triples Circle', 'MRRM21');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('12', '812546355', 'semi-detached', '43.6529', '79.3829', 'Toronto', 'Canada', '1 Mars Street', 'M6RMP5');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('13', '812546355', 'room', '43.6539', '79.3822', 'Toronto', 'Canada', '32 Draft Winds Ave', 'MPL3RR');
+
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('14', '823881472', 'appartment', '43.6519', '79.3824', 'Toronto', 'Canada', '62 Taylor Circle', 'M34MR5');
+
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('15', '729482370', 'condo', '43.6519', '79.3824', 'Toronto', 'Canada', '77 Bray Drive', 'M32M15');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('16', '729482370', 'condo', '43.6520', '79.3825', 'Toronto', 'Canada', '81 Mayflower St', 'M34MR5');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('17', '729482370', 'room', '43.6521', '79.3826', 'Toronto', 'Canada', '62 Taylor Circle', 'MM2PS4');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('18', '729482370', 'bungalow', '43.6522', '79.3827', 'Toronto', 'Canada', '62 Taylor Circle', 'MS7PL2');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('19', '729482370', 'bungalow', '43.6523', '79.3828', 'Toronto', 'Canada', '62 Taylor Circle', 'ML91M3');
+INSERT INTO listing(listingID, hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('20', '729482370', 'bungalow', '43.6524', '79.3829', 'Toronto', 'Canada', '62 Taylor Circle', 'M1M2M2');
+
+INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('1', 'table', 'alarm system', 'gym', '7/11 nearby', '1 bedroom, 1 bathroom', 'balcony', '3 rooms');
+INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('3', 'dining room', 'building security', 'gym, swimming pool', 'mall nearby', '2 bedroom, 1 bathroom', 'none', '5 room, kitchen appliances supplied');
+INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('14', 'island, appliances provided', 'alarms', 'garden park', 'restaurants nearby', '1 bedroom, 1 bathroom', 'garden', '4 rooms');
+INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('15', 'dining room', 'alarm system', 'gym, roomtop garden', 'strip mall nearby', '3 bedroom, 2 bathroom', 'garden', '3 rooms');
+INSERT INTO amenities(listingID, dining, safetyFeatures, facilities, guestAccess, logistics, notIncluded, bedAndBath, outdoor, basic) VALUES('19', 'table', 'alarm system', 'swimming pool', 'cafe nearby', '1 bedroom, 1 bathroom', 'balcony', '3 rooms');
+
+INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('1', '2019-08-01', '2019-08-05', '50.99');
+INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('1', '2019-08-08', '2019-08-30', '50.99');
+INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('15', '2019-08-14', '2019-08-20', '31.52');
+INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('14', '2019-09-03', '2019-08-18', '62.11');
+INSERT INTO calendar(listingID, startDate, endDate, price) VALUES('11', '2019-08-01', '2019-08-31', '58.20');
+
+INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('1', '719924344', '2019-08-06', '2019-08-07', '50.99');
+INSERT INTO reservations(listingID, renterSIN, endDate, startDate, price) VALUES('5', '733039854', '2019-09-06', '2019-09-10', '80.20');
+
+INSERT INTO history(historyID, hostSIN, renterSIN, listingID, startDate, endDate) VALUES('1', '942394552', '733039854', '3', '2019-01-03', '2019-01-05');
+INSERT INTO history(historyID, hostSIN, renterSIN, listingID, startDate, endDate) VALUES('2', '942394552', '719924344', '1', '2019-08-06', '2019-01-07');
+INSERT INTO history(historyID, hostSIN, renterSIN, listingID, startDate, endDate) VALUES('3', '942394552', '733039854', '5', '2019-09-06', '2019-09-10');
+
+INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN) VALUES('823881472', '13', '2019-03-2', '2019-03-05', '729482370');
+
+INSERT INTO usercomments(commentID, toSIN, fromSIN, message) VALUES('1', '733039854', '942394552', 'Nice host, everything was proper');
+
+INSERT INTO listingrating(ratingID, listingID, fromSIN, rating, message) VALUES('1', '3', '733039854', '4', 'Great place, well organized and nicly accomodating');

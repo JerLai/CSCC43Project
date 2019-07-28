@@ -173,4 +173,5 @@ CREATE TABLE IF NOT EXISTS `users` (
   `occupation` char(20) NOT NULL,
   `DoB` date NOT NULL
 )
+
 COMMIT;
