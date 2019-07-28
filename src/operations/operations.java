@@ -227,12 +227,18 @@ public class operations {
 		query = "DELETE FROM history WHERE hostSIN='" + hostSIN + "' AND listingID='" + listingID +"' AND startDate='"+start.toString()+"' AND endDate='" + end.toString() + "' AND renterSIN='"+SIN+"';"; 
 		DBAPI.sendQuery(connection, query);
 
-		query = "INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN) VALUES ('"+hostSIN+"', '"+listingID + "', '"+start.toString() + "', '" +end+"', '" + SIN+"');";
+		query = "INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN, hostCancel) VALUES ('"+hostSIN+"', '"+listingID + "', '"+start.toString() + "', '" +end+"', '" + SIN+"', '1');";
 		DBAPI.sendQuery(connection, query);
 	}
 
 	public static void renterRemoveListing(Connection connection, String listingID, Date start, Date end, String SIN, String hostSIN, double price) throws SQLException {
-		hostRemoveListing(connection, listingID, start, end, SIN, hostSIN);
+		query = "DELETE FROM reservations WHERE listingID='"+listingID+"' AND startDate='"+start.toString()+"' AND endDate='" + end.toString() +"' AND renterSIN='"+SIN+"';";
+		DBAPI.sendQuery(connection, query);
+		query = "DELETE FROM history WHERE hostSIN='" + hostSIN + "' AND listingID='" + listingID +"' AND startDate='"+start.toString()+"' AND endDate='" + end.toString() + "' AND renterSIN='"+SIN+"';"; 
+		DBAPI.sendQuery(connection, query);
+
+		query = "INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN, hostCancel) VALUES ('"+hostSIN+"', '"+listingID + "', '"+start.toString() + "', '" +end+"', '" + SIN+"', '0');";
+		DBAPI.sendQuery(connection, query);
 
 		query = "SELECT * FROM calendar WHERE listingID="+listingID+";";
 
