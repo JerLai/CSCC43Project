@@ -23,6 +23,8 @@ public class RenterMenu extends Menu {
 			int choice = -1;
 			boolean exit = false;
 			do {
+				this.printMenu();
+				input = this.keyboard.nextLine();
 				try {
 					choice = Integer.parseInt(input);
 
@@ -145,6 +147,7 @@ public class RenterMenu extends Menu {
 							System.err.println("An unexpected error has occurred, returning to main menu");
 						}
 						exit = false;
+						break;
 					default:
 						break;
 					}
