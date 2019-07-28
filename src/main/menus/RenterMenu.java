@@ -31,7 +31,8 @@ public class RenterMenu extends Menu {
 						try {
 							// Don't let them leave unless they explicitly type exit
 							while (!exit) {
-								// Always repull the bookings incase they actually do cancel one, so we should update the list
+								// Always repull the bookings incase they actually do cancel one, so we should
+								// update the list
 								ArrayList<HashMap<String, String>> reservations = queries
 										.renterBookings(this.connection, this.credentials.get(0));
 								this.printReservations(reservations);
@@ -48,17 +49,19 @@ public class RenterMenu extends Menu {
 									} else if (resIndex == 0) {
 										exit = true;
 									} else {
-										// 
-										System.out.print("Enter 'cancel' to cancel this reservation, or anything else to exit: ");
+										//
+										System.out.print(
+												"Enter 'cancel' to cancel this reservation, or anything else to exit: ");
 										input = this.keyboard.nextLine();
 										if (input.equalsIgnoreCase("cancel")) {
 											String listing = reservations.get(resIndex - 1).get("listingID");
 											Date start = Date.valueOf(reservations.get(resIndex - 1).get("startDate"));
 											Date end = Date.valueOf(reservations.get(resIndex - 1).get("endDate"));
 											String hostSIN = reservations.get(resIndex - 1).get("hostSIN");
+											double price = Double.parseDouble(reservations.get(resIndex - 1).get("price"));
 											try {
 												operations.renterRemoveListing(this.connection, listing, start, end,
-														this.credentials.get(0), hostSIN, 30);
+														this.credentials.get(0), hostSIN, price);
 											} catch (SQLException e) {
 												System.err.println(
 														"Error has occurred while removing reservation, please try again");
@@ -88,10 +91,9 @@ public class RenterMenu extends Menu {
 							break;
 						}
 					case 3: // View booking history
-					default:
 						try {
 							while (!exit) {
-								ArrayList<String> history = queries.getHistory(this.connection,
+								ArrayList<String> history = queries.getHistoryRenter(this.connection,
 										this.credentials.get(0));
 								this.printHistory(history);
 								System.out.print("Enter the number of a reservation to focus on, or '0' to exit: ");
@@ -124,9 +126,11 @@ public class RenterMenu extends Menu {
 												System.out.println("Type your message, then hit 'Enter' to send.");
 												input = this.keyboard.next();
 												operations.addRating(this.connection, this.credentials.get(0), input,
-														rating, history.get((resIndex * 5) + 3)); // offset needed to get the right attribute
+														rating, history.get((resIndex * 5) + 3)); // offset needed to
+																									// get the right
+																									// attribute
 											} catch (SQLException e) {
-
+												System.err.println("No interaction exists between you and the host: Illegal Operation");
 											}
 										} else if (input.equalsIgnoreCase("0")) {
 											exit = true;
@@ -141,6 +145,7 @@ public class RenterMenu extends Menu {
 							System.err.println("An unexpected error has occurred, returning to main menu");
 						}
 						exit = false;
+					default:
 						break;
 					}
 
