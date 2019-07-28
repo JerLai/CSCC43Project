@@ -136,14 +136,14 @@ public class queries {
 			String occupation = data.getString("occupation");
 			Date dob = data.getDate("DoB");
 			int SIN = data.getInt("SIN");
-			int credit = data.getInt("creditCard");
+			String credit = data.getString("creditCard");
 			
 			entry.add(Integer.toString(SIN));
 			entry.add(name);
 			entry.add(address);
 			entry.add(occupation);
 			entry.add(dob.toString());
-			entry.add(Integer.toString(credit));
+			entry.add(credit);
 			
 			results.add(entry);
 		}

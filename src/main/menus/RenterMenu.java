@@ -40,11 +40,11 @@ public class RenterMenu extends Menu {
 								this.printReservations(reservations);
 
 								System.out.print("Enter the number of a reservation to focus on, or '0' to exit: ");
-								input = this.keyboard.nextLine();
+								String num = this.keyboard.nextLine();
 								int resIndex = 0;
 
 								try {
-									resIndex = Integer.parseInt(input);
+									resIndex = Integer.parseInt(num);
 									// Error handling
 									if (resIndex > reservations.size() || resIndex < 0) {
 										System.err.println("Invalid index value!");
@@ -216,10 +216,10 @@ public class RenterMenu extends Menu {
 										this.credentials.get(0));
 								this.printHistory(history);
 								System.out.print("Enter the number of a reservation to focus on, or '0' to exit: ");
-								input = this.keyboard.nextLine();
+								String num2 = this.keyboard.nextLine();
 								int resIndex = 0;
 								try {
-									resIndex = Integer.parseInt(input);
+									resIndex = Integer.parseInt(num2);
 									int historySize = history.size() / 5;
 									if (resIndex > historySize || resIndex < 0) {
 										System.err.println("Invalid index value!");
@@ -282,11 +282,11 @@ public class RenterMenu extends Menu {
 	}
 
 	private void printReservations(ArrayList<HashMap<String, String>> reservations) {
-		System.out.printf("Bookings: %-10s%-15s%-35s%-20s%-10s%n", "listingID", "type", "address", "city", "country");
+		System.out.printf("Bookings: %-10s%-40s%-35s%-20s%-10s%n", "listingID", "type", "address", "city", "country");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < reservations.size(); i++) {
-			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, (reservations.get(i)).get("listingID"),
+			System.out.printf("%-10d%-10s%-40s%-35s%-20s%-10s%n", i + 1, (reservations.get(i)).get("listingID"),
 					(reservations.get(i)).get("type"), (reservations.get(i)).get("address"),
 					(reservations.get(i)).get("city"), (reservations.get(i)).get("country"));
 		}
@@ -322,7 +322,7 @@ public class RenterMenu extends Menu {
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < results.size(); i++) {
 			System.out.printf(
-					"%-10d%-10s%-9s%-10s%-5s%-5s%-25s%-25s%-35s%-10s%-10s%-10s%-10s%-10s%-20s%-20s%-20s%-20s%-20s%n",
+					"%-10d%-10s%-40s%-10s%-5s%-5s%-25s%-25s%-35s%-10s%-40s%-40s%-40s%-40s%-40s%-40s%-40s%-40s%-40s%n",
 					i + 1, (results.get(i)).get("listingID"), (results.get(i)).get("hostSIN"),
 					(results.get(i)).get("type"), (results.get(i)).get("longitude"), (results.get(i)).get("latitude"),
 					(results.get(i)).get("city"), (results.get(i)).get("country"), (results.get(i)).get("address"),

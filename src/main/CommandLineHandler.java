@@ -106,11 +106,12 @@ public class CommandLineHandler {
 					choice = Integer.parseInt(input);
 					switch (choice) { // Activate the desired functionality
 					case 1: // Create User Account + Host/Renter
-						String hostInfo[] = this.userInfo();
 						System.out.print(
 								"\nType 'host' to start with a host profile, or 'renter' for a renter profile, or anything else to exit: ");
 						input = sc.nextLine();
+						String [] hostInfo = null;
 						if (input.equalsIgnoreCase("renter")) {
+							hostInfo = this.userInfo();
 							System.out.print("Enter your Credit Card number: ");
 							String creditCard = sc.next();
 							try {
@@ -122,6 +123,7 @@ public class CommandLineHandler {
 							}
 
 						} else if (input.equalsIgnoreCase("host")) {
+							hostInfo = this.userInfo();
 							try {
 								operations.createProfile(userConnection, hostInfo[0], hostInfo[1], hostInfo[2],
 										hostInfo[3], hostInfo[4]);
@@ -145,10 +147,10 @@ public class CommandLineHandler {
 
 							while (!exit) {
 								System.out.print("Enter the number of the renter to select/login to, or '0' to exit: ");
-								input = sc.nextLine();
+								String renter = sc.nextLine();
 								int renterIndex = 0;
 								try {
-									renterIndex = Integer.parseInt(input);
+									renterIndex = Integer.parseInt(renter);
 									if (renterIndex > allRenters.size() || renterIndex < 0) {
 										System.err.println("Invalid index value!");
 									} else if (renterIndex == 0) {
@@ -173,14 +175,14 @@ public class CommandLineHandler {
 							ArrayList<ArrayList<String>> allHosts = queries.getHosts(userConnection);
 							this.printHostResults(allHosts);
 							while (!exit) {
-								System.out.print("Enter the number of the host to select/login to, or '0' to exit: ");
-								input = sc.nextLine();
+								System.out.print("Enter the number of the host to select/login to, or 'exit' to exit: ");
+								String host = sc.nextLine();
 								int hostIndex = 0;
 								try {
-									hostIndex = Integer.parseInt(input);
+									hostIndex = Integer.parseInt(host);
 									if (hostIndex > allHosts.size() || hostIndex < 0) {
 										System.err.println("Invalid index value!");
-									} else if (hostIndex == 0) {
+									} else if (input.equalsIgnoreCase("exit")) {
 										exit = true;
 									} else {
 										// RUN THE HOST MENU
@@ -268,7 +270,9 @@ public class CommandLineHandler {
 						}
 						break;
 					case 6:
-						int option = -1;
+						String option = "";
+						String type = "";
+						boolean leave = false;
 						do {
 							try {
 								Date start = null;
@@ -276,9 +280,9 @@ public class CommandLineHandler {
 								String city = null;
 								String country = null;
 								reports();
-								option = sc.nextInt();
+								option = sc.nextLine();
 								switch (option) {
-								case 1: // per city
+								case "1": // per city
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
 									start = Date.valueOf(sc.nextLine());
 									System.out.print("Enter an end date (YYYY-MM-DD): ");
@@ -289,7 +293,7 @@ public class CommandLineHandler {
 									System.out.printf("%-20s|%-15s%n", "City", "Bookings");
 									this.printHashMapStringInt(totalNumBkCity);
 									break;
-								case 2: // per zip code
+								case "2": // per zip code
 									System.out.print("Enter a city: ");
 									city = sc.nextLine();
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
@@ -302,41 +306,49 @@ public class CommandLineHandler {
 									System.out.printf("%-20s|%-15s%n", "Postal Code", "Bookings");
 									this.printHashMapStringInt(totalNumBkPostal);
 									break;
-								case 3: // total number listings for 1, 2, 3
+								case "3": // total number listings for 1, 2, 3
 									System.out.print(
 											"Type 0 for country, 1 for country and city, 2 for country, city and postal code: ");
-									option = sc.nextInt();
-									HashMap<String, Integer> totalListings = reports.numListings(this.userConnection,
-											option);
+									type = sc.nextLine();
+									HashMap<String, Integer> totalListings = null;
 									System.out.print("Report on Number of Listings, Grouped by ");
-									if (option == 0) {
+									if (type.equalsIgnoreCase("0")) {
 										System.out.print("Country\n");
 										System.out.printf("%-50s|%-10s%n", "Country", "Bookings");
-									} else if (option == 1) {
+										totalListings = reports.numListings(this.userConnection,
+												0);
+									} else if (type.equalsIgnoreCase("1")) {
 										System.out.print("Country/City\n");
 										System.out.printf("%-50s|%-10s%n", "Country/City", "Bookings");
-									} else if (option == 2) {
+										totalListings = reports.numListings(this.userConnection,
+												1);
+									} else if (type.equalsIgnoreCase("2")) {
 										System.out.print("Country/City/Postal Code\n");
 										System.out.printf("%-50s|%-10s%n", "Country/City/Postal Code", "Bookings");
+										totalListings = reports.numListings(this.userConnection,
+												2);
 									}
 									this.printHashMapStringInt(totalListings);
 									break;
-								case 4: // host ranking
+								case "4": // host ranking
 									System.out.print("Type 0 for country, 1 for city: ");
-									option = sc.nextInt();
-									HashMap<String, ArrayList<String>> hostRanks = reports
-											.hostRanking(this.userConnection, option);
+									type = sc.nextLine();
+									HashMap<String, ArrayList<String>> hostRanks = null;
 									System.out.print("Report on host rankings by total number listings owned per ");
-									if (option == 0) {
+									if (type.equalsIgnoreCase("0")) {
 										System.out.print("Country\n");
 										System.out.printf("%-20s|%-20s%n", "Country", "Listings");
-									} else if (option == 1) {
+										hostRanks = reports
+												.hostRanking(this.userConnection, 0);
+									} else if (type.equalsIgnoreCase("1")) {
 										System.out.print("City\n");
 										System.out.printf("%-20s|%-20s%n", "City", "Listings");
+										hostRanks = reports
+												.hostRanking(this.userConnection, 1);
 									}
 									this.printHashMapStringArrayListString(hostRanks);
 									break;
-								case 5: // commercial hosts in country
+								case "5": // commercial hosts in country
 									System.out.print("Enter the country to find potential commerical hosts for: ");
 									country = sc.nextLine();
 									ArrayList<String> maybeCommerce = reports.commercialHosts(this.userConnection,
@@ -345,7 +357,7 @@ public class CommandLineHandler {
 									System.out.printf("%-20s%n", "Host");
 									this.printArrayListString(maybeCommerce);
 									break;
-								case 6: // commercial hosts in city
+								case "6": // commercial hosts in city
 									System.out.print("Enter the city to find potential commerical hosts for: ");
 									city = sc.nextLine();
 									ArrayList<String> maybeCommerceCity = reports
@@ -354,7 +366,7 @@ public class CommandLineHandler {
 									System.out.printf("%-20s%n", "Host");
 									this.printArrayListString(maybeCommerceCity);
 									break;
-								case 7: // renters ranking in time frame
+								case "7": // renters ranking in time frame
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
 									start = Date.valueOf(sc.nextLine());
 									System.out.print("Enter an end date (YYYY-MM-DD): ");
@@ -365,18 +377,18 @@ public class CommandLineHandler {
 									System.out.printf("%-20s%n", "Host");
 									this.printArrayListString(renterRanks);
 									break;
-								case 8: // renters ranking city
+								case "8": // renters ranking city
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
 									start = Date.valueOf(sc.nextLine());
 									System.out.print("Enter an end date (YYYY-MM-DD): ");
 									end = Date.valueOf(sc.nextLine());
 									HashMap<String, ArrayList<String>> renterRanksCity = reports
 											.rentersRankingCity(this.userConnection, start, end);
-									System.out.printf("Report on renter ranks on number of bookings made per city who have made at least 2 bookings");
+									System.out.printf("Report on renter ranks on number of bookings made per city who have made at least 2 bookings\n");
 									System.out.printf("%-20s|%-20s|%-20s", "City", "Name", "Bookings");
 									this.printHashMapStringArrayListString(renterRanksCity);
 									break;
-								case 9: // largest num cancellations host
+								case "9": // largest num cancellations host
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
 									start = Date.valueOf(sc.nextLine());
 									HashMap<String, Integer> hostCancels = reports.largestHost(this.userConnection,
@@ -385,7 +397,7 @@ public class CommandLineHandler {
 									System.out.printf("%-20s|%-15s%n", "Host", "Cancellations");
 									this.printHashMapStringInt(hostCancels);
 									break;
-								case 10: // largest num cancellations renter
+								case "10": // largest num cancellations renter
 									System.out.print("Enter a start date (YYYY-MM-DD): ");
 									start = Date.valueOf(sc.nextLine());
 									HashMap<String, Integer> renterCancels = reports.largestRenter(this.userConnection,
@@ -394,13 +406,17 @@ public class CommandLineHandler {
 									System.out.printf("%-20s|%-15s%n", "Renter", "Cancellations");
 									this.printHashMapStringInt(renterCancels);
 									break;
-								case 11: // Word Cloud
+								case "11": // Word Cloud
 									System.out.println("Here is the breakdown of the word clouds for the entries:");
 									HashMap<Integer, HashMap<String, Integer>> wordCloudRes = reports
 											.wordCloud(this.userConnection);
 									this.printWordCloud(wordCloudRes);
 									break;
+								case "exit":
+									leave = true;
+									break;
 								default:
+									leave = true;
 									break;
 								}
 							} catch (SQLException e) {
@@ -408,7 +424,8 @@ public class CommandLineHandler {
 								break;
 							}
 
-						} while (option != 0);
+						} while (!leave);
+						leave = false;
 						break;
 					default:
 						break;
@@ -440,9 +457,8 @@ public class CommandLineHandler {
 		for (String strKey : results.keySet()) {
 			System.out.printf("%-20s", strKey);
 			for (int i = 0; i < results.get(strKey).size(); i++) {
-				System.out.printf("|%-20s", results.get(strKey).get(i));
+				System.out.printf("|%-20s%n", results.get(strKey).get(i));
 			}
-			System.out.print("\n");
 			System.out.println("------------------------------------------------------------");
 		}
 	}
@@ -477,13 +493,12 @@ public class CommandLineHandler {
 	}
 
 	private void printRenterResults(ArrayList<ArrayList<String>> results) {
-		System.out.printf("Renters: %-9s%-15s%-35s%-20s%-10s%-16%n", "SIN", "Name", "Address", "Occupation", "DoB",
-				"Credit Card");
+		System.out.printf("Renters: %-9s%-15s%-35s%-20s%-10s%n", "SIN", "Name", "Address", "Occupation", "DoB");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < results.size(); i++) {
 			System.out.printf("%-9d%-9s%-15s%-35s%-20s%-10s%n", i + 1, (results.get(i)).get(0), (results.get(i)).get(1),
-					(results.get(i)).get(2), (results.get(i)).get(3), (results.get(i)).get(4), (results.get(i)).get(5));
+					(results.get(i)).get(2), (results.get(i)).get(3), (results.get(i)).get(4));
 		}
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
