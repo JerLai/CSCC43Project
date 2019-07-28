@@ -282,7 +282,7 @@ public class reports {
 	 */
 	public static HashMap<String, Integer> largestHost(Connection connection, Date start) throws SQLException{
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
-		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled where U.SIN=cancelled.hostSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.hostSIN AND who='host')>all(SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND users.SIN=cancelled.hostSIN AND who='host' GROUP BY user.name)";
+		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled WHERE hostCancel='1' AND U.SIN=cancelled.hostSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.hostSIN AND who='host')>all(SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND users.SIN=cancelled.hostSIN AND who='host' GROUP BY user.name)";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		
 		while (data.next()) {
@@ -300,7 +300,7 @@ public class reports {
 	 */
 	public static HashMap<String, Integer> largestRenter(Connection connection, Date start) throws SQLException{
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
-		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled where U.SIN=cancelled.renterSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.renterSIN AND who='renter')>all(SELECT COUNT(*) FROM user,cancelled WHERE startDate > '\"+start+\"' AND user.SIN=cancelled.renterSIN AND who='renter' GROUP BY user.name)";
+		query = "SELECT name, COUNT(*) AS COUNT FROM users U,cancelled WHERE hostCancel='0' AND U.SIN=cancelled.renterSIN AND (SELECT COUNT(*) FROM users,cancelled WHERE startDate > '"+start+"' AND U.SIN=cancelled.renterSIN AND who='renter')>all(SELECT COUNT(*) FROM user,cancelled WHERE startDate > '\"+start+\"' AND user.SIN=cancelled.renterSIN AND who='renter' GROUP BY user.name)";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		
 		while (data.next()) {
