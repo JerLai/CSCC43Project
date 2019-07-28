@@ -83,7 +83,6 @@ public class HostMenu extends Menu {
 											// data values needed regardless of option
 											String listing = listings.get(resIndex - 1).get("listingID");
 											String hostSIN = listings.get(resIndex - 1).get("hostSIN"); // this.credentials.get(0);
-											String renterSIN = listings.get(resIndex - 1).get("renterSIN");
 											System.out.print(
 													"Enter 'remove' to remove this listing, 'adjust' to adjust the price, 'check' to view availabilities, or anything else to exit: ");
 											input = this.keyboard.nextLine();
@@ -117,29 +116,64 @@ public class HostMenu extends Menu {
 												}
 
 											} else if (input.equalsIgnoreCase("check")) {
-												System.out.print(
-														"Enter 'remove' to remove an availability, 'update' to alter availability range, anything else to exit: ");
-												input = this.keyboard.nextLine();
-												if (input.equalsIgnoreCase("remove")) {
+												try {
+													ArrayList<HashMap<String, String>> calendar = queries
+															.showCalendar(this.connection, listing);
+													this.printCalendarForListing(calendar);
 													System.out.print(
-															"Enter the start date of the availability to remove (YYY-MM-DD): ");
+															"Enter the index of the availability to interact with, or '0' to exit: ");
 													input = this.keyboard.nextLine();
-													Date startDate = Date.valueOf(input);
-													System.out.print(
-															"Enter the end date of the availability to remove (YYY-MM-DD): ");
-													input = this.keyboard.nextLine();
-													Date endDate = Date.valueOf(input);
+													int availIndex = -1;
 													try {
-														operations.removeCalendar(this.connection, listing, startDate,
-																endDate);
-													} catch (SQLException e) {
-														System.err.println(
-																"An unexpected error has occurred while removing an availability. Please try again.");
-													}
-												} else if (input.equalsIgnoreCase("update")) {
+														availIndex = Integer.parseInt(input);
+														if (availIndex > calendar.size() || availIndex < 0) {
+															System.err.println("Invalid index!");
+														} else if (availIndex == 0) {
+															exit = true;
+														} else {
+															System.out.print(
+																	"Enter 'remove' to remove the availability, 'update' to alter availability range, anything else to exit: ");
+															input = this.keyboard.nextLine();
+															Date startDate = Date.valueOf(calendar.get(availIndex - 1).get("startDate"));
+															Date endDate = Date.valueOf(calendar.get(availIndex - 1).get("startDate"));
+															if (input.equalsIgnoreCase("remove")) {
+																try {
+																	operations.removeCalendar(this.connection, listing,
+																			startDate, endDate);
+																	System.out
+																			.println("Availability has been removed.");
+																} catch (SQLException e) {
+																	System.err.println(
+																			"An unexpected error has occurred while removing an availability. Please try again.");
+																}
+															} else if (input.equalsIgnoreCase("update")) {
+																System.out.print(
+																		"Enter the new start date to update to (YYY-MM-DD): ");
+																input = this.keyboard.nextLine();
+																Date newStart = Date.valueOf(input);
+																System.out.print(
+																		"Enter the new end date to update to (YYY-MM-DD): ");
+																input = this.keyboard.nextLine();
+																Date newEnd = Date.valueOf(input);
+																try {
+																	operations.updateTime(this.connection, listing,
+																			startDate, endDate, newStart, newEnd);
+																} catch (SQLException e) {
+																	System.err.println(
+																			"An unexpected error has occurred while updating the availability. Please try again.");
+																}
+															} else {
+																exit = true;
+															}
+														}
 
-												} else {
-													exit = true;
+													} catch (NumberFormatException e) {
+														System.err.println("Invalid format value!");
+													}
+
+												} catch (SQLException e) {
+													System.err.println(
+															"Error has occurred while retrieving the calendar, please try again");
 												}
 											} else {
 												exit = true;
@@ -202,47 +236,55 @@ public class HostMenu extends Menu {
 						exit = false;
 						break;
 					case 3: // View all current reservations
-						while (!exit) {
-							// Always repull the reservations incase they actually do remove one, so we
-							// should
-							// update the list
-							ArrayList<HashMap<String, String>> reservations = queries
-									.reservationsToHost(this.connection, this.credentials.get(0));
-							this.printReservations(reservations);
-							System.out.print("Enter the index of a reservation to interact with, or '0' to exit: ");
-							input = this.keyboard.nextLine();
-							try {
-								int bookedIndex = 0;
-								bookedIndex = Integer.parseInt(input);
-								if (bookedIndex < 0 || bookedIndex > reservations.size()) {
-									System.err.println("Not a valid index!");
-								} else if (bookedIndex == 0) {
-									exit = true;
-								} else {
-									System.out.print("Enter 'remove' to remove this listing, anything else to exit: ");
-									input = this.keyboard.nextLine();
-									if (input.equalsIgnoreCase("remove")) {
-										try {
-											Date resStart = Date
-													.valueOf(reservations.get(bookedIndex - 1).get("startDate"));
-											Date resEnd = Date
-													.valueOf(reservations.get(bookedIndex - 1).get("endDate"));
-											String renter = reservations.get(bookedIndex - 1).get("renterSIN");
-											operations.hostRemoveListing(this.connection,
-													reservations.get(bookedIndex - 1).get("listingID"), resStart,
-													resEnd, renter, this.credentials.get(0));
-											System.out.println("Reservation has been removed.");
-										} catch (SQLException e) {
-											System.err.println(
-													"An unexpected error has occurred when removing this reservation. Please try again");
-										}
+						try {
+							while (!exit) {
 
+								// Always repull the reservations incase they actually do remove one, so we
+								// should
+								// update the list
+								ArrayList<HashMap<String, String>> reservations = queries
+										.reservationsToHost(this.connection, this.credentials.get(0));
+								this.printReservations(reservations);
+								System.out.print("Enter the index of a reservation to interact with, or '0' to exit: ");
+								input = this.keyboard.nextLine();
+								try {
+									int bookedIndex = 0;
+									bookedIndex = Integer.parseInt(input);
+									if (bookedIndex < 0 || bookedIndex > reservations.size()) {
+										System.err.println("Not a valid index!");
+									} else if (bookedIndex == 0) {
+										exit = true;
+									} else {
+										System.out.print(
+												"Enter 'remove' to remove this listing, anything else to exit: ");
+										input = this.keyboard.nextLine();
+										if (input.equalsIgnoreCase("remove")) {
+											try {
+												Date resStart = Date
+														.valueOf(reservations.get(bookedIndex - 1).get("startDate"));
+												Date resEnd = Date
+														.valueOf(reservations.get(bookedIndex - 1).get("endDate"));
+												String renter = reservations.get(bookedIndex - 1).get("renterSIN");
+												operations.hostRemoveListing(this.connection,
+														reservations.get(bookedIndex - 1).get("listingID"), resStart,
+														resEnd, renter, this.credentials.get(0));
+												System.out.println("Reservation has been removed.");
+											} catch (SQLException e) {
+												System.err.println(
+														"An unexpected error has occurred when removing this reservation. Please try again");
+											}
+
+										}
 									}
+								} catch (NumberFormatException e) {
+									System.err.println("Invalid Number Format!");
 								}
-							} catch (NumberFormatException e) {
-								System.err.println("Invalid Number Format!");
 							}
+						} catch (SQLException e) {
+							System.err.println(
+									"An unexpected error has occurred when retrieving reservations. Returning to main menu.");
 						}
+
 						exit = false;
 						break;
 					case 4: // Host Toolkit
@@ -308,7 +350,9 @@ public class HostMenu extends Menu {
 				}
 			} while (input.compareTo("0") != 0);
 			return true;
-		} else {
+		} else
+
+		{
 			System.err.println("A problem has occurred while rendering the Host Menu. Please try again.");
 			return false;
 		}
@@ -354,6 +398,20 @@ public class HostMenu extends Menu {
 			}
 		}
 
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+	}
+
+	private void printCalendarForListing(ArrayList<HashMap<String, String>> calendar) {
+		System.out.printf("Calendar: %-10s%-15s%-35s%-20s%-10s%n", "listingID", "renterSIN", "hostSIN", "startDate",
+				"endDate");
+		System.out
+				.println("-------------------------------------------------------------------------------------------");
+		for (int i = 0; i < calendar.size(); i++) {
+			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, (calendar.get(i)).get("listingID"),
+					(calendar.get(i)).get("renterSIN"), (calendar.get(i)).get("hostSIN"),
+					(calendar.get(i)).get("startDate"), (calendar.get(i)).get("endDate"));
+		}
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 	}
