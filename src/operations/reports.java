@@ -2,7 +2,6 @@ package operations;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -109,8 +108,6 @@ public class reports {
 	 * @throws SQLException
 	 */
 	public static  HashMap<String, ArrayList<String>> hostRanking(Connection connection, int type) throws SQLException{
-		ArrayList<HashMap<String, Integer>> data = new ArrayList<HashMap<String, Integer>>();
-		HashMap<String, HashMap<String, Integer>> res = new HashMap<String, HashMap<String, Integer>>();
 		HashMap<String, Integer> entry = new HashMap<String, Integer>();
 		
 		ArrayList<String[]> test = new ArrayList<String[]>();
@@ -148,7 +145,6 @@ public class reports {
 		HashMap<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
 		
 		for (String[] person: data) {
-			//System.out.println(person[0]);
 			String country = person[0];
 			
 			if (result.containsKey(country)) {
@@ -178,12 +174,9 @@ public class reports {
 		// query = "SELECT U.name as NAME FROM host H, users U WHERE (H.SIN=U.SIN) AND 0 < (SELECT COUNT(*) FROM listing WHERE country='"+country+"' AND listing.hostSIN=U.SIN)"; 
 		//query = "SELECT users.name as NAME FROM host H, users WHERE (H.SIN=users.SIN) AND";
 		
-		System.out.println(query);
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		ArrayList<String> row = new ArrayList<String>();
 		while (data.next()) {
-			//System.out.println(data.getString("NAME"));
-			//System.out.println(data.getString("NAME"));
 			row.add(data.getString("NAME"));
 			
 		}

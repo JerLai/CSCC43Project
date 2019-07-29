@@ -22,7 +22,6 @@ public class operations {
 
 		query = "INSERT INTO users(SIN, name, address, occupation, DoB) VALUES('" + SIN + "', '" + name + "', '"
 				+ address + "', '" + occupation + "', '" + dob + "');";
-		System.out.println(query);
 		DBAPI.sendQuery(connection, query);
 
 		// host
@@ -145,7 +144,7 @@ public class operations {
 		if (start.compareTo(end) > 0) {
 			// the start is after the end date somehow
 			// give an error
-			System.out.println("Start Date has to be after End Date, try again.");
+			System.err.println("Start Date has to be after End Date, try again.");
 			return;
 		}
 		query = "SELECT * FROM listing LEFT JOIN calendar ON listing.listingID = calendar.listingID WHERE listing.listingID="
@@ -156,7 +155,6 @@ public class operations {
 			Date setEnd = data.getDate("endDate");
 			String price = Double.toString(data.getDouble("price"));
 
-			System.out.println();
 			if (setStart.compareTo(start) < 0 && setEnd.compareTo(end) > 0
 					&& !start.toString().equals(setStart.toString()) && !end.toString().equals(setEnd.toString())) {
 				// split the time into 2
@@ -297,9 +295,7 @@ public class operations {
 				query = "DELETE FROM calendar WHERE listingID='" + listingID + "' AND startDate='" + setStart
 						+ "' AND endDate='" + setEnd + "';";
 				DBAPI.sendQuery(connection, query);
-				System.out.println(query);
 				set = true;
-				System.out.println("1");
 			} else if (setEnd.toString().equals(yesterday.toString())) {
 				query = "INSERT calendar(listingID, startDate, endDate, price) VALUES('" + listingID + "', '"
 						+ setStart.toString() + "', '" + end.toString() + "', '" + price + "');";
@@ -308,13 +304,11 @@ public class operations {
 				query = "DELETE FROM calendar WHERE listingID='" + listingID + "' AND startDate='" + setStart
 						+ "' AND endDate='" + setEnd + "';";
 				DBAPI.sendQuery(connection, query);
-				System.out.println("2");
 				set = true;
 
 			} else if (setStart.toString().equals(tomorrow.toString()) && price == setPrice && set) {
 				query = "UPDATE calendar SET endDate='" + setEnd.toString() + "' WHERE listingID='" + listingID
 						+ "' AND endDate='" + end.toString() + "';";
-				System.out.println("3");
 				DBAPI.sendQuery(connection, query);
 				query = "DELETE FROM calendar WHERE listingID='" + listingID + "' AND startDate='" + setStart
 						+ "' AND endDate='" + setEnd + "';";
@@ -326,7 +320,6 @@ public class operations {
 				query = "INSERT calendar(listingID, startDate, endDate, price) VALUES('" + listingID + "', '"
 						+ start.toString() + "', '" + setEnd.toString() + "', '" + price + "');";
 				DBAPI.sendQuery(connection, query);
-				System.out.println("4");
 				query = "DELETE FROM calendar WHERE listingID='" + listingID + "' AND startDate='" + setStart
 						+ "' AND endDate='" + setEnd + "';";
 				DBAPI.sendQuery(connection, query);
@@ -345,7 +338,6 @@ public class operations {
 	public static void hostUpdatePrice(Connection connection, String listingID, String SIN, Date start, Date end,
 			String price) throws SQLException {
 		query = "UPDATE calendar SET price='" + price + "' WHERE startDate='" + start + "'AND endDate='" + end + "';";
-		System.out.println(query);
 		DBAPI.sendQuery(connection, query);
 	}
 
@@ -373,7 +365,6 @@ public class operations {
 			throws SQLException {
 		query = "INSERT INTO usercomments(toSIN,fromSIN, message) VALUES('" + toSIN + "', '" + fromSIN
 				+ "', '" + message + "');";
-		System.out.println(query);
 		DBAPI.sendQuery(connection, query);
 	}
 
@@ -381,7 +372,6 @@ public class operations {
 			throws SQLException {
 		query = "INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('" + listingID
 				+ "', '" + SIN + "', '" + rating + "', '" + message + "');";
-		System.out.println(query);
 		DBAPI.sendQuery(connection, query);
 	}
 

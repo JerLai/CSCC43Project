@@ -67,9 +67,9 @@ INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN, hostCan
 INSERT INTO cancelled(hostSIN, listingID, startDate, endDate, renterSIN, hostCancel) VALUES('823881472', '13', '2019-01-02', '2019-01-05', '733039854', '0');
 
 INSERT INTO usercomments(toSIN, fromSIN, message) VALUES('942394552', '733039854', 'Nice host. everything was proper.');
-INSERT INTO usercomments(toSIN, fromSIN, message) VALUES('942394552', '719924344', 'Amazing place. I can't believe everything was so clean.');
+INSERT INTO usercomments(toSIN, fromSIN, message) VALUES('942394552', '719924344', 'Amazing place. I can not believe everything was so clean.');
 
 
 INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('3', '733039854', '4', 'Great place. well organized and nicely accomodating.');
-INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('1', '719924344', '3', 'Experience was average. Building wasn't well maintained, but it was cozy and festive.');
-INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('5', '733039854', '1', 'Absolutely appalling place. Will never come back and stay in the building.');
+INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('1', '719924344', '3', 'Experience was average. Building was not well maintained, but it was cozy and festive.');
+INSERT INTO listingrating(listingID, fromSIN, rating, message) VALUES('5', '733039854', '1', 'Absolutely appalling place. Will never come back and stay in the building. Did not look well organized in the full building picture.');

@@ -121,6 +121,7 @@ public class RenterMenu extends Menu {
 									lat = this.keyboard.nextDouble();
 									System.out.print("Enter the longitude you desire: ");
 									lng = this.keyboard.nextDouble();
+									this.keyboard.nextLine();
 								}
 								System.out.print("Do you want to search for a specific address (yes/no): ");
 								String sAdd = this.keyboard.nextLine();
@@ -223,7 +224,7 @@ public class RenterMenu extends Menu {
 							} catch (SQLException e) {
 								System.err.println(
 										"An unexpected error has occurred while processing your request. Please try again");
-								e.getMessage();
+								System.err.println(e.getMessage());
 								e.printStackTrace();
 							}
 						} else if (input.equalsIgnoreCase("exit")) {
@@ -253,7 +254,7 @@ public class RenterMenu extends Menu {
 										if (input.equalsIgnoreCase("comment")) {
 											try {
 												System.out.println("Type your message, then hit 'Enter' to send.");
-												input = this.keyboard.next();
+												input = this.keyboard.nextLine();
 												operations.addComment(this.connection,
 														history.get(resIndex - 1).get("hostSIN"),
 														this.credentials.get(0), input);
@@ -263,9 +264,9 @@ public class RenterMenu extends Menu {
 										} else if (input.equalsIgnoreCase("rate")) {
 											try {
 												System.out.print("Enter a number between 0-5 to rate this listing: ");
-												String rating = this.keyboard.next();
+												String rating = this.keyboard.nextLine();
 												System.out.println("Type your message, then hit 'Enter' to send.");
-												input = this.keyboard.next();
+												input = this.keyboard.nextLine();
 												operations.addRating(this.connection, this.credentials.get(0), input,
 														rating, history.get(resIndex - 1).get("listingID")); // offset
 																												// needed
@@ -340,8 +341,8 @@ public class RenterMenu extends Menu {
 				"endDate");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
-		for (int i = 0; i <= history.size(); i++) {
-			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i, history.get(i).get("hostSIN"),
+		for (int i = 0; i < history.size(); i++) {
+			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, history.get(i).get("hostSIN"),
 					history.get(i).get("renterSIN"), history.get(i).get("listingID"), history.get(i).get("startDate"),
 					history.get(i).get("endDate"));
 

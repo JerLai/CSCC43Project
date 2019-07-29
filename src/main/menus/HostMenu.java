@@ -84,7 +84,7 @@ public class HostMenu extends Menu {
 											String listing = listings.get(resIndex - 1).get("listingID");
 											String hostSIN = listings.get(resIndex - 1).get("hostSIN"); // this.credentials.get(0);
 											System.out.print(
-													"Enter 'remove' to remove this listing, 'adjust' to adjust the price, 'amenity' to add amenities, 'check' to view availabilities, or anything else to exit: ");
+													"Enter 'remove' to remove this listing, 'amenity' to add amenities, 'check' to view availabilities, or anything else to exit: ");
 											input = this.keyboard.nextLine();
 											if (input.equalsIgnoreCase("remove")) {
 
@@ -95,26 +95,6 @@ public class HostMenu extends Menu {
 													System.err.println(
 															"Error has occurred while removing the listing, please try again");
 												}
-											} else if (input.equalsIgnoreCase("adjust")) {
-												System.out.print("Indicate the new price: ");
-												String price = this.keyboard.nextLine();
-												System.out.print(
-														"Indicate the start date for the new price (YYYY-MM-DD): ");
-												input = this.keyboard.nextLine();
-												Date start = Date.valueOf(input);
-												System.out.print(
-														"Indicate the end date for the new price (YYYY-MM-DD): ");
-												input = this.keyboard.nextLine();
-												Date end = Date.valueOf(input);
-												try {
-													operations.hostUpdatePrice(this.connection, listing, hostSIN, start,
-															end, price);
-													System.out.println("Listing price has been adjusted.");
-												} catch (SQLException e) {
-													System.err.println(
-															"Error has occurred while adjusting the price, please try again");
-												}
-
 											} else if (input.equalsIgnoreCase("amenity")) {
 												/*
 												 * public static void addAmenity(Connection connection, String dining,
@@ -232,7 +212,7 @@ public class HostMenu extends Menu {
 																exit = true;
 															} else {
 																System.out.print(
-																		"Enter 'remove' to remove the availability, 'update' to alter availability range, anything else to exit: ");
+																		"Enter 'remove' to remove the availability, 'update' to alter availability range, 'adjust' to adjust the price, anything else to exit: ");
 																input = this.keyboard.nextLine();
 																Date startDate = Date.valueOf(
 																		calendar.get(availIndex - 1).get("startDate"));
@@ -263,7 +243,23 @@ public class HostMenu extends Menu {
 																	} catch (SQLException e) {
 																		System.err.println(
 																				"An unexpected error has occurred while updating the availability. Please try again.");
+																		System.err.println(e.getMessage());
+																		e.printStackTrace();
 																	}
+																} else if (input.equalsIgnoreCase("adjust")) {
+																	System.out.print("Indicate the new price: ");
+																	String price = this.keyboard.nextLine();
+																	try {
+																		operations.hostUpdatePrice(this.connection, listing, hostSIN, startDate,
+																				endDate, price);
+																		System.out.println("Listing price has been adjusted.");
+																	} catch (SQLException e) {
+																		System.err.println(
+																				"Error has occurred while adjusting the price, please try again");
+																		System.err.println(e.getMessage());
+																		e.printStackTrace();
+																	}
+
 																} else {
 																	exit = true;
 																}

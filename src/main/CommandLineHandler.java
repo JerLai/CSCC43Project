@@ -354,7 +354,7 @@ public class CommandLineHandler {
 									ArrayList<String> maybeCommerce = reports.commercialHosts(this.userConnection,
 											country);
 									System.out.println("Report on Hosts that own more than 10% of all listings in a country");
-									System.out.printf("%-20s%n", "Host");
+									System.out.printf("%-20s%n", "Ranking (Descending)");
 									this.printArrayListString(maybeCommerce);
 									break;
 								case "6": // commercial hosts in city
@@ -385,7 +385,7 @@ public class CommandLineHandler {
 									HashMap<String, ArrayList<String>> renterRanksCity = reports
 											.rentersRankingCity(this.userConnection, start, end);
 									System.out.printf("Report on renter ranks on number of bookings made per city who have made at least 2 bookings\n");
-									System.out.printf("%-20s|%-20s|%-20s", "City", "Name", "Bookings");
+									System.out.printf("%-20s|%-20s|%-20s", "City", "Name", "Rankings (Descending)");
 									this.printHashMapStringArrayListString(renterRanksCity);
 									break;
 								case "9": // largest num cancellations host
@@ -394,7 +394,7 @@ public class CommandLineHandler {
 									HashMap<String, Integer> hostCancels = reports.largestHost(this.userConnection,
 											start);
 									System.out.println("Report on Largest Number of Cancellations for a Host in a year from a start date");
-									System.out.printf("%-20s|%-15s%n", "Host", "Cancellations");
+									System.out.printf("%-20s|%-15s%n", "Host", "Ranking (Descending)");
 									this.printHashMapStringInt(hostCancels);
 									break;
 								case "10": // largest num cancellations renter
@@ -403,7 +403,7 @@ public class CommandLineHandler {
 									HashMap<String, Integer> renterCancels = reports.largestRenter(this.userConnection,
 											start);
 									System.out.println("Report on Largest Number of Cancellations for a Renter in a year from a start date");
-									System.out.printf("%-20s|%-15s%n", "Renter", "Cancellations");
+									System.out.printf("%-20s|%-15s%n", "Renter", "Ranking (Descending)");
 									this.printHashMapStringInt(renterCancels);
 									break;
 								case "11": // Word Cloud
@@ -471,11 +471,11 @@ public class CommandLineHandler {
 	}
 
 	private void printWordCloud(HashMap<Integer, HashMap<String, Integer>> results) {
-		System.out.printf("%-10s|%-30s|%-5s", "ListingID", "Message", "Occurrences");
+		System.out.printf("%-10s|%-100s|%-5s%n", "ListingID", "Message", "Occurrences");
 		System.out.println("------------------------------------------------------------");
 		for (Integer listingID : results.keySet()) {
 			for (String nounPhrase : results.get(listingID).keySet()) {
-				System.out.printf("%-10d|%-30s|%-5d%n", listingID, nounPhrase, results.get(listingID).get(nounPhrase));
+				System.out.printf("%-10d|%-100s|%-5d%n", listingID, nounPhrase, results.get(listingID).get(nounPhrase));
 			}
 			System.out.println("------------------------------------------------------------");
 		}

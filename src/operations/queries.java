@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -288,11 +287,10 @@ public class queries {
 			ArrayList<HashMap<String, String>> data) throws SQLException {
 		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
 
-		query = "SELECT * FROM " + all + " WHERE dining LIKE '" + query + "' OR safetyFeatures LIKE '" + query
-				+ "' OR facilities LIKE '" + query + "' OR guestAccess LIKE '" + query + "' OR logistics LIKE '" + query
-				+ "' OR notIncluded LIKE '" + query + "' OR bedAndBath LIKE '" + query + "' OR outdoor LIKE '" + query
-				+ "' OR basic LIKE '" + query + ";";
-		// System.out.println(query);
+		query = "SELECT * FROM " + all + " WHERE dining='" + query + "' OR safetyFeatures='" + query
+				+ "' OR facilities='" + query + "' OR guestAccess='" + query + "' OR logistics='" + query
+				+ "' OR notIncluded='" + query + "' OR bedAndBath='" + query + "' OR outdoor='" + query
+				+ "' OR basic='" + query + "';";
 
 		result = processResult(DBAPI.getDataByQuery(connection, query));
 		result = intersection(data, result);
