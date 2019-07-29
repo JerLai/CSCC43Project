@@ -93,7 +93,7 @@ public class RenterMenu extends Menu {
 						Date start = null, end = null;
 						int rankPrice = 1;
 						System.out.print("Do you want a simple search? (yes/no), or type 'exit' to exit: ");
-						input = this.keyboard.next();
+						input = this.keyboard.nextLine();
 						ArrayList<HashMap<String, String>> results = null;
 						/*
 						 * public static ArrayList<HashMap<String, String>> startFilter(Connection
@@ -105,15 +105,15 @@ public class RenterMenu extends Menu {
 						if (input.equalsIgnoreCase("no") || input.equalsIgnoreCase("yes")) {
 							if (input.equalsIgnoreCase("no")) {
 								System.out.print("Do you want to search for a specific postal code (yes/no): ");
-								input = this.keyboard.nextLine();
-								postal = input.equalsIgnoreCase("yes");
+								String pCode = this.keyboard.nextLine();
+								postal = pCode.equalsIgnoreCase("yes");
 								if (postal) {
 									System.out.print("Enter the 6 digit postal code you desire: ");
 									postalValue = this.keyboard.nextLine();
 								}
 								System.out.print("Do you want to limit the search radius (yes/no): ");
-								input = this.keyboard.nextLine();
-								distance = input.equalsIgnoreCase("yes");
+								String sRadius = this.keyboard.nextLine();
+								distance = sRadius.equalsIgnoreCase("yes");
 								if (distance) {
 									System.out.print("Enter the maximum distance in km you desire: ");
 									km = this.keyboard.nextDouble();
@@ -123,15 +123,15 @@ public class RenterMenu extends Menu {
 									lng = this.keyboard.nextDouble();
 								}
 								System.out.print("Do you want to search for a specific address (yes/no): ");
-								input = this.keyboard.nextLine();
-								address = input.equalsIgnoreCase("yes");
+								String sAdd = this.keyboard.nextLine();
+								address = sAdd.equalsIgnoreCase("yes");
 								if (address) {
 									System.out.print("Enter the address you desire: ");
 									searchAddress = this.keyboard.nextLine();
 								}
 								System.out.print("Do you want to specify the date range for availability (yes/no): ");
-								input = this.keyboard.nextLine();
-								temporal = input.equalsIgnoreCase("yes");
+								String dRange = this.keyboard.nextLine();
+								temporal = dRange.equalsIgnoreCase("yes");
 								if (temporal) {
 									System.out.print("Enter your intended start date (YYYY-MM-DD): ");
 									start = Date.valueOf(this.keyboard.nextLine());
@@ -139,8 +139,8 @@ public class RenterMenu extends Menu {
 									end = Date.valueOf(this.keyboard.nextLine());
 								}
 								System.out.print("Do you want to limit the price range (yes/no): ");
-								input = this.keyboard.nextLine();
-								price = input.equalsIgnoreCase("yes");
+								String pRange = this.keyboard.nextLine();
+								price = pRange.equalsIgnoreCase("yes");
 								if (price) {
 									System.out.print("Enter the lower price limit: ");
 									priceL = this.keyboard.nextDouble();
@@ -148,18 +148,18 @@ public class RenterMenu extends Menu {
 									priceH = this.keyboard.nextDouble();
 								}
 								System.out.print("Do you want to have a specific amenity (limit 1) (yes/no): ");
-								input = this.keyboard.nextLine();
-								amenities = input.equalsIgnoreCase("yes");
+								String sAmen = this.keyboard.nextLine();
+								amenities = sAmen.equalsIgnoreCase("yes");
 								if (amenities) {
 									System.out.print("Enter the amenity you desire: ");
 									searchAmenities = this.keyboard.nextLine();
 								}
 								System.out.print(
 										"Do you want to sort your searches in 'ascending', 'descending' order, type anything else for no preference: ");
-								input = this.keyboard.nextLine();
-								if (input.equalsIgnoreCase("ascending")) {
+								String sort = this.keyboard.nextLine();
+								if (sort.equalsIgnoreCase("ascending")) {
 									rankPrice = 1;
-								} else if (input.equalsIgnoreCase("descending")) {
+								} else if (sort.equalsIgnoreCase("descending")) {
 									rankPrice = 2;
 								}
 							}
@@ -201,7 +201,7 @@ public class RenterMenu extends Menu {
 											} else if (input.equalsIgnoreCase("comment")) {
 												System.out.println(
 														"Type the comment you want to make below, then hit enter.");
-												String message = this.keyboard.next();
+												String message = this.keyboard.nextLine();
 												operations.addComment(this.connection,
 														results.get(selection - 1).get("hostSIN"),
 														this.credentials.get(0), message);
@@ -210,7 +210,7 @@ public class RenterMenu extends Menu {
 												double rating = this.keyboard.nextDouble();
 												System.out.println(
 														"Type the comment you want to make below, then hit enter.");
-												String comment = this.keyboard.next();
+												String comment = this.keyboard.nextLine();
 												operations.addRating(this.connection, this.credentials.get(0), comment,
 														Double.toString(rating),
 														results.get(selection - 1).get("listingID"));
