@@ -16,14 +16,14 @@ INSERT INTO renter(SIN, creditCard) VALUES('719924344', '4755129384710390');
 INSERT INTO renter(SIN, creditCard) VALUES('733039854', '3382918940029182');
 
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'appartment', '43.6529', '79.3840', 'Toronto', 'Canada', '41 Maple Tree Ave', 'M4RL22');
-INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'appartment', '43.6539', '79.3838', 'Tokyo', 'Japan', '5 Starway St', 'M4RLR2');
+INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'appartment', '70.6539', '120.3838', 'Tokyo', 'Japan', '5 Starway St', 'M4RLR2');
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'appartment', '43.6519', '79.3824', 'Toronto', 'Canada', '62 Taylor Circle', 'M34MR5');
-INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '43.6520', '79.3834', 'Berlin', 'Germany', '55 Gileon Circle', 'M34MRR');
+INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '60.6520', '80.3834', 'Berlin', 'Germany', '55 Gileon Circle', 'M34MRR');
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '43.6511', '79.3820', 'Toronto', 'Canada', '244 Brave St', 'M41R2R');
-INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '43.6526', '79.3836', 'Seoul', 'South Korea', '25 Mardov Circle', 'M3SP3S');
+INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '80.6526', '90.3836', 'Seoul', 'South Korea', '25 Mardov Circle', 'M3SP3S');
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'condo', '43.6529', '79.3814', 'Vancouver', 'Canada', '7 Evergreen Ave', 'M4HP22');
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'detached', '43.6527', '79.3832', 'Toronto', 'Canada', '72 Malory Diner St', 'MM2R2P');
-INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'bungalow', '43.6523', '79.3834', 'Beijing', 'China', '15 Wurst Cresent', 'M47LLR');
+INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'bungalow', '130.6523', '130.3834', 'Beijing', 'China', '15 Wurst Cresent', 'M47LLR');
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('942394552', 'bungalow', '43.6518', '79.3831', 'Toronto', 'Canada', '691 Alison Drive', 'M12M1M');
 
 INSERT INTO listing(hostSIN, type, longitude, latitude, city, country, address, postalCode) VALUES('812546355', 'semi-detached', '43.6511', '79.3825', 'Toronto', 'Canada', '32 Triples Circle', 'MRRM21');
