@@ -525,11 +525,11 @@ public class CommandLineHandler {
 		System.out.println("=========User MENU=========");
 		System.out.println("0. Exit.");
 		System.out.println("1. Create an Account + Host/Renter Profile.");
-		System.out.println("2. Select/Login a Host/Renter Profile.");
+		System.out.println("2. Select/Login to a Host/Renter Profile.");
 		System.out.println("3. Add a Host/Renter Profile.");
 		System.out.println("4. Delete a Host/Renter Profile.");
 		System.out.println("5. Delete a User Account (and associated profiles).");
-		System.out.println("6. View AirBnB report statistics.");
+		System.out.println("6. View MyBnB report statistics.");
 		System.out.print("Choose one of the previous options [0-6]: ");
 	}
 
