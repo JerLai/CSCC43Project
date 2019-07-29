@@ -1,0 +1,131 @@
+DROP DATABASE IF EXISTS my_bnb;
+CREATE DATABASE my_bnb;
+USE my_bnb;
+
+CREATE TABLE listing (
+  listingID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  hostSIN INT(9) NOT NULL,
+  type CHAR(40) NOT NULL,
+  longitude DOUBLE NOT NULL,
+  latitude DOUBLE NOT NULL,
+  city VARCHAR(25) NOT NULL,
+  country VARCHAR(25) NOT NULL,
+  address VARCHAR(35) NOT NULL,
+  postalCode CHAR(10) NOT NULL
+);
+
+CREATE TABLE users (
+  SIN INT(9) NOT NULL PRIMARY KEY,
+  name VARCHAR(15) NOT NULL,
+  address VARCHAR(35) NOT NULL,
+  occupation CHAR(20) NOT NULL,
+  DoB DATE NOT NULL
+);
+
+CREATE TABLE amenities (
+  listingID INT(10) NOT NULL,
+  dining CHAR(40),
+  safetyFeatures CHAR(40),
+  facilities CHAR(40),
+  guestAccess CHAR(40),
+  logistics CHAR(40),
+  notIncluded CHAR(40),
+  bedAndBath CHAR(40),
+  outdoor CHAR(40),
+  basic CHAR(40),
+  FOREIGN KEY (listingID) REFERENCES listing(listingID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE calendar (
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  price DOUBLE NOT NULL,
+  PRIMARY KEY (listingID, startDate),
+  FOREIGN KEY (listingID) REFERENCES listing(listingID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE cancelled (
+  cancelID INT(10) NOT NULL AUTO_INCREMENT,
+  hostSIN INT(9) NOT NULL,
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  hostCancel TINYINT(1),
+  PRIMARY KEY (cancelID, listingID),
+  FOREIGN KEY (listingID) REFERENCES listing(listingID)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE history (
+  historyID INT(10) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  hostSIN INT(9) NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  listingID INT(10) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL
+);
+
+CREATE TABLE host (
+  SIN INT(9) NOT NULL,
+  FOREIGN KEY (SIN) REFERENCES users (SIN) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE listingrating (
+  ratingID INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  listingID INT(10) NOT NULL,
+  fromSIN INT(9) NOT NULL,
+  rating DOUBLE NOT NULL,
+  message TEXT
+);
+
+DELIMITER //
+CREATE TRIGGER ListingRatingInsert BEFORE INSERT ON listingrating FOR EACH ROW
+BEGIN
+IF((new.rating < 0 OR new.rating > 5) OR NOT EXISTS (SELECT * FROM history AS h WHERE NEW.listingID = h.listingID AND NEW.fromSIN = h.renterSIN)) THEN 
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You have either entered an invalid rating, or have not yet booked this place before';
+END IF;
+END //
+DELIMITER ;
+
+CREATE TABLE renter (
+  SIN INT(9) NOT NULL,
+  creditCard CHAR(16) NOT NULL,
+  FOREIGN KEY (SIN) REFERENCES users (SIN) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE reservations (
+  reserveID INT(10) NOT NULL AUTO_INCREMENT,
+  listingID INT(10) NOT NULL,
+  renterSIN INT(9) NOT NULL,
+  startDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  price DOUBLE NOT NULL,
+  PRIMARY KEY (reserveID, listingID),
+  FOREIGN KEY (listingID) REFERENCES listing(listingID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE usercomments (
+  commentID INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  toSIN INT(9) NOT NULL,
+  fromSIN INT(9) NOT NULL,
+  message TEXT NOT NULL
+);
+
+DELIMITER //
+CREATE TRIGGER UserCommentInsert BEFORE INSERT ON usercomments FOR EACH ROW
+BEGIN
+IF(NOT EXISTS (SELECT * FROM history AS h WHERE (NEW.toSIN = h.renterSIN OR NEW.toSIN = h.hostSIN) AND (NEW.fromSIN = h.renterSIN OR NEW.fromSIN = h.hostSIN))) THEN
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You have not had a transaction interaction before, illegal operation';
+END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER CalendarInsert BEFORE INSERT ON calendar FOR EACH ROW
+BEGIN
+IF((NEW.startDate > New.endDate) OR EXISTS (SELECT * FROM reservations AS r WHERE (NEW.startDate <= r.startDate AND NEW.endDate >= r.startDate AND NEW.listingID = r.listingID))) THEN
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Inverted dates or freeing up timeslots on a booked period illegally';
+END IF;
+END //
+DELIMITER ;

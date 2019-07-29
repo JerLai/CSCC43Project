@@ -84,7 +84,7 @@ public class HostMenu extends Menu {
 											String listing = listings.get(resIndex - 1).get("listingID");
 											String hostSIN = listings.get(resIndex - 1).get("hostSIN"); // this.credentials.get(0);
 											System.out.print(
-													"Enter 'remove' to remove this listing, 'adjust' to adjust the price, 'check' to view availabilities, or anything else to exit: ");
+													"Enter 'remove' to remove this listing, 'adjust' to adjust the price, 'amenity' to add amenities, 'check' to view availabilities, or anything else to exit: ");
 											input = this.keyboard.nextLine();
 											if (input.equalsIgnoreCase("remove")) {
 
@@ -99,11 +99,11 @@ public class HostMenu extends Menu {
 												System.out.print("Indicate the new price: ");
 												String price = this.keyboard.nextLine();
 												System.out.print(
-														"Indicate the start date for the new price (YYY-MM-DD): ");
+														"Indicate the start date for the new price (YYYY-MM-DD): ");
 												input = this.keyboard.nextLine();
 												Date start = Date.valueOf(input);
-												System.out
-														.print("Indicate the end date for the new price (YYY-MM-DD): ");
+												System.out.print(
+														"Indicate the end date for the new price (YYYY-MM-DD): ");
 												input = this.keyboard.nextLine();
 												Date end = Date.valueOf(input);
 												try {
@@ -115,60 +115,163 @@ public class HostMenu extends Menu {
 															"Error has occurred while adjusting the price, please try again");
 												}
 
+											} else if (input.equalsIgnoreCase("amenity")) {
+												/*
+												 * public static void addAmenity(Connection connection, String dining,
+												 * String safety, String facilities, String guest, String logistics,
+												 * String notIncluded, String bed, String outdoor, String basic, String
+												 * listingID) throws SQLException {
+												 */
+												String dining = null, safety = null, facilities = null, guest = null,
+														logistics = null, notIncluded = null, bed = null,
+														outdoor = null, basic = null;
+												System.out.print("Do you want to add a dining feature (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													dining = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add a safety feature (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													safety = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add a facility feature (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													facilities = this.keyboard.nextLine();
+												}
+												System.out
+														.print("Do you want to add a guest entrance option (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													guest = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add a logistics option (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													logistics = this.keyboard.nextLine();
+												}
+												System.out.print(
+														"Do you want to add a feature that isn't included (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													notIncluded = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add a bed option (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													bed = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add an outdoor feature (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													outdoor = this.keyboard.nextLine();
+												}
+												System.out.print("Do you want to add a basic feature (yes/no): ");
+												input = this.keyboard.nextLine();
+												if (input.equalsIgnoreCase("yes")) {
+													System.out.print("Enter your addition: ");
+													basic = this.keyboard.nextLine();
+												}
+												try {
+													operations.addAmenity(this.connection, dining, safety, facilities,
+															guest, logistics, notIncluded, bed, outdoor, basic,
+															listing);
+													System.out.println("Amenities for this listing has been updated.");
+												} catch (SQLException e) {
+													System.err.println(
+															"Error has occurred while adding amenities to the listing");
+													e.printStackTrace();
+												}
 											} else if (input.equalsIgnoreCase("check")) {
 												try {
-													ArrayList<HashMap<String, String>> calendar = queries
-															.showCalendar(this.connection, listing);
+													ArrayList<HashMap<String, String>> calendar = queries.showCalendar(
+															this.connection, listing, this.credentials.get(0));
 													this.printCalendarForListing(calendar);
 													System.out.print(
-															"Enter the index of the availability to interact with, or '0' to exit: ");
-													String indexOpt = this.keyboard.nextLine();
-													int availIndex = -1;
-													try {
-														availIndex = Integer.parseInt(indexOpt);
-														if (availIndex > calendar.size() || availIndex < 0) {
-															System.err.println("Invalid index!");
-														} else if (availIndex == 0) {
-															exit = true;
-														} else {
-															System.out.print(
-																	"Enter 'remove' to remove the availability, 'update' to alter availability range, anything else to exit: ");
-															input = this.keyboard.nextLine();
-															Date startDate = Date.valueOf(calendar.get(availIndex - 1).get("startDate"));
-															Date endDate = Date.valueOf(calendar.get(availIndex - 1).get("startDate"));
-															if (input.equalsIgnoreCase("remove")) {
-																try {
-																	operations.removeCalendar(this.connection, listing,
-																			startDate, endDate);
-																	System.out
-																			.println("Availability has been removed.");
-																} catch (SQLException e) {
-																	System.err.println(
-																			"An unexpected error has occurred while removing an availability. Please try again.");
-																}
-															} else if (input.equalsIgnoreCase("update")) {
-																System.out.print(
-																		"Enter the new start date to update to (YYY-MM-DD): ");
-																input = this.keyboard.nextLine();
-																Date newStart = Date.valueOf(input);
-																System.out.print(
-																		"Enter the new end date to update to (YYY-MM-DD): ");
-																input = this.keyboard.nextLine();
-																Date newEnd = Date.valueOf(input);
-																try {
-																	operations.updateTime(this.connection, listing,
-																			startDate, endDate, newStart, newEnd);
-																} catch (SQLException e) {
-																	System.err.println(
-																			"An unexpected error has occurred while updating the availability. Please try again.");
-																}
-															} else {
-																exit = true;
-															}
+															"Enter 'add' to add a new availability, or 'mod' to modify existing ones, anything else to exit: ");
+													input = this.keyboard.nextLine();
+													if (input.equalsIgnoreCase("add")) {
+														System.out.println(
+																"WARNING: The system will not merge overlapping or consecutive availabilities.");
+														System.out.print(
+																"Enter the start date of the availability (YYYY-MM-DD): ");
+														String addStart = this.keyboard.nextLine();
+														System.out.print(
+																"Enter the end date of the availability (YYYY-MM-DD): ");
+														String addEnd = this.keyboard.nextLine();
+														System.out.print("Enter the price of the availability: ");
+														String addPrice = this.keyboard.nextLine();
+														try {
+															operations.createCalendar(this.connection, listing,
+																	addStart, addEnd, addPrice);
+														} catch (SQLException e) {
+															System.err.println(
+																	"An unexpected error has occurred while adding an availability");
+															System.err.println(e.getMessage());
+															e.printStackTrace();
 														}
+													} else if (input.equalsIgnoreCase("mod")) {
+														System.out.print(
+																"Enter the index of the availability to interact with, or '0' to exit: ");
+														String indexOpt = this.keyboard.nextLine();
+														int availIndex = -1;
+														try {
+															availIndex = Integer.parseInt(indexOpt);
+															if (availIndex > calendar.size() || availIndex < 0) {
+																System.err.println("Invalid index!");
+															} else if (availIndex == 0) {
+																exit = true;
+															} else {
+																System.out.print(
+																		"Enter 'remove' to remove the availability, 'update' to alter availability range, anything else to exit: ");
+																input = this.keyboard.nextLine();
+																Date startDate = Date.valueOf(
+																		calendar.get(availIndex - 1).get("startDate"));
+																Date endDate = Date.valueOf(
+																		calendar.get(availIndex - 1).get("endDate"));
+																if (input.equalsIgnoreCase("remove")) {
+																	try {
+																		operations.removeCalendar(this.connection,
+																				listing, startDate, endDate);
+																		System.out.println(
+																				"Availability has been removed.");
+																	} catch (SQLException e) {
+																		System.err.println(
+																				"An unexpected error has occurred while removing an availability. Please try again.");
+																	}
+																} else if (input.equalsIgnoreCase("update")) {
+																	System.out.print(
+																			"Enter the new start date to update to (YYYY-MM-DD): ");
+																	input = this.keyboard.nextLine();
+																	Date newStart = Date.valueOf(input);
+																	System.out.print(
+																			"Enter the new end date to update to (YYYY-MM-DD): ");
+																	input = this.keyboard.nextLine();
+																	Date newEnd = Date.valueOf(input);
+																	try {
+																		operations.updateTime(this.connection, listing,
+																				startDate, endDate, newStart, newEnd);
+																	} catch (SQLException e) {
+																		System.err.println(
+																				"An unexpected error has occurred while updating the availability. Please try again.");
+																	}
+																} else {
+																	exit = true;
+																}
+															}
 
-													} catch (NumberFormatException e) {
-														System.err.println("Invalid format value!");
+														} catch (NumberFormatException e) {
+															System.err.println("Invalid format value!");
+														}
 													}
 
 												} catch (SQLException e) {
@@ -196,16 +299,15 @@ public class HostMenu extends Menu {
 					case 2: // View rental history
 						try {
 							while (!exit) {
-								ArrayList<String> history = queries.getHistoryHost(this.connection,
+								ArrayList<HashMap<String, String>> history = queries.getHistoryHost(this.connection,
 										this.credentials.get(0));
 								this.printHistory(history);
 								System.out.print("Enter the number of a record to focus on, or '0' to exit: ");
-								input = this.keyboard.nextLine();
+								String record = this.keyboard.nextLine();
 								int resIndex = 0;
 								try {
-									resIndex = Integer.parseInt(input);
-									int historySize = history.size() / 5;
-									if (resIndex > historySize || resIndex < 0) {
+									resIndex = Integer.parseInt(record);
+									if (resIndex > history.size() || resIndex < 0) {
 										System.err.println("Invalid index value!");
 									} else if (resIndex == 0) {
 										exit = true;
@@ -215,12 +317,15 @@ public class HostMenu extends Menu {
 										if (input.equalsIgnoreCase("comment")) {
 											try {
 												System.out.println("Type your message, then hit 'Enter' to send.");
-												input = this.keyboard.next();
-												operations.addComment(this.connection, this.credentials.get(0),
-														history.get((resIndex * 5) - 1), input);
+												input = this.keyboard.nextLine();
+												operations.addComment(this.connection,
+														history.get(resIndex - 1).get("renterSIN"),
+														this.credentials.get(0), input);
 											} catch (SQLException e) {
 												System.err.println(
 														"No interaction exists between you and the renter: Illegal Operation");
+												System.err.println(e.getMessage());
+												e.printStackTrace();
 											}
 										} else if (input.equalsIgnoreCase("0")) {
 											exit = true;
@@ -247,10 +352,10 @@ public class HostMenu extends Menu {
 										.reservationsToHost(this.connection, this.credentials.get(0));
 								this.printReservations(reservations);
 								System.out.print("Enter the index of a reservation to interact with, or '0' to exit: ");
-								input = this.keyboard.nextLine();
+								String reserve = this.keyboard.nextLine();
 								try {
 									int bookedIndex = 0;
-									bookedIndex = Integer.parseInt(input);
+									bookedIndex = Integer.parseInt(reserve);
 									if (bookedIndex < 0 || bookedIndex > reservations.size()) {
 										System.err.println("Not a valid index!");
 									} else if (bookedIndex == 0) {
@@ -291,10 +396,10 @@ public class HostMenu extends Menu {
 					case 4: // Host Toolkit
 						do {
 							this.toolKitOptions();
-							input = this.keyboard.nextLine();
+							String toolOp = this.keyboard.nextLine();
 							int option = -1;
 							try {
-								option = Integer.parseInt(input);
+								option = Integer.parseInt(toolOp);
 								String city = "";
 								switch (option) {
 								case 1:
@@ -303,11 +408,12 @@ public class HostMenu extends Menu {
 									try {
 										String amenity = hostToolKit.recommendAmenity(this.connection, city);
 										System.out.printf(
-												"The most lacking amenity in %s is: %s. Use this to help you make your listings stand out!",
-												input, amenity);
+												"The most lacking amenity in %s is: %s. Use this to help you make your listings stand out!%n",
+												city, amenity);
 									} catch (SQLException e) {
 										System.err.println(
 												"An unexpected error has occurred while finding the lacking amenity.");
+										e.printStackTrace();
 									}
 									break;
 								case 2:
@@ -317,9 +423,9 @@ public class HostMenu extends Menu {
 											"Enter 'low' to find the lowest pricing, 'high' to find the highest: ");
 									String type = this.keyboard.nextLine();
 									try {
-										boolean decision = type.equalsIgnoreCase("low");
+										boolean decision = type.equalsIgnoreCase("high");
 										String price = hostToolKit.endPrice(this.connection, city, decision);
-										if (decision) {
+										if (!decision) {
 											System.out.printf(
 													"The lowest listing in %s is: %s. Use this to help you make your listings stand out!",
 													city, price);
@@ -332,6 +438,7 @@ public class HostMenu extends Menu {
 									} catch (SQLException e) {
 										System.err.println(
 												"An unexpected error has occurred while finding the highest/lowest price in the city.");
+										e.printStackTrace();
 									}
 									break;
 								default:
@@ -373,30 +480,27 @@ public class HostMenu extends Menu {
 	}
 
 	private void printReservations(ArrayList<HashMap<String, String>> reservations) {
-		System.out.printf("Listings: %-10s%-15s%-35s%-20s%-10s%n", "listingID", "type", "address", "city", "country");
+		System.out.printf("Listings: %-10s%-15s%-11s%-11s%n", "listingID", "renterSIN", "endDate", "startDate");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < reservations.size(); i++) {
-			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, (reservations.get(i)).get("listingID"),
-					(reservations.get(i)).get("type"), (reservations.get(i)).get("address"),
-					(reservations.get(i)).get("city"), (reservations.get(i)).get("country"));
+			System.out.printf("%-10d%-10s%-15s%-11s%-11s%n", i + 1, (reservations.get(i)).get("listingID"),
+					(reservations.get(i)).get("renterSIN"), (reservations.get(i)).get("endDate"),
+					(reservations.get(i)).get("startDate"));
 		}
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 	}
 
-	private void printHistory(ArrayList<String> history) {
+	private void printHistory(ArrayList<HashMap<String, String>> history) {
 		System.out.printf("History: %-10s%-15s%-35s%-20s%-10s%n", "hostSIN", "renterSIN", "listingID", "startDate",
 				"endDate");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
-		int j = 0;
-		for (int i = 1; i <= history.size() / 5; i++) {
-			if (j < history.size()) {
-				System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, history.get(j), history.get(j + 1),
-						history.get(j + 2), history.get(j + 3), history.get(j + 4));
-				j += 5;
-			}
+		for (int i = 0; i < history.size(); i++) {
+			System.out.printf("%-10d%-10s%-15s%-35s%-20s%-10s%n", i + 1, history.get(i).get("hostSIN"),
+					history.get(i).get("renterSIN"), history.get(i).get("listingID"), history.get(i).get("startDate"),
+					history.get(i).get("endDate"));
 		}
 
 		System.out
@@ -404,13 +508,14 @@ public class HostMenu extends Menu {
 	}
 
 	private void printCalendarForListing(ArrayList<HashMap<String, String>> calendar) {
-		System.out.printf("Calendar: %-10s%-10s%-11s%-11s%n", "listingID", "hostSIN", "startDate",
-				"endDate");
+		System.out.printf("Calendar: %-10s%-10s%-11s%-11s%-5s%n", "listingID", "hostSIN", "startDate", "endDate",
+				"price");
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
 		for (int i = 0; i < calendar.size(); i++) {
-			System.out.printf("%-10d%-10s%-10s%-11s%-11s%n", i + 1, (calendar.get(i)).get("listingID"), (calendar.get(i)).get("hostSIN"),
-					(calendar.get(i)).get("startDate"), (calendar.get(i)).get("endDate"));
+			System.out.printf("%-10d%-10s%-10s%-11s%-11s%-5s%n", i + 1, (calendar.get(i)).get("listingID"),
+					(calendar.get(i)).get("hostSIN"), (calendar.get(i)).get("startDate"),
+					(calendar.get(i)).get("endDate"), (calendar.get(i)).get("price"));
 		}
 		System.out
 				.println("-------------------------------------------------------------------------------------------");
@@ -421,8 +526,8 @@ public class HostMenu extends Menu {
 		System.out.println("=========Host MENU=========");
 		System.out.println("0. Exit.");
 		System.out.println("1. View your listings. (Add and remove, adjust price)");
-		System.out.println("2. View all current reservations. (Remove)");
-		System.out.println("3. View rental history (comment on renter)");
+		System.out.println("2. View rental history (comment on renter)");
+		System.out.println("3. View all current reservations. (Remove)");
 		System.out.println("4. Host Toolkit.");
 		System.out.print("Choose one of the previous options [0-4]: ");
 	}

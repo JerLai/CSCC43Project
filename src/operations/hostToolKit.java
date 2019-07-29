@@ -43,7 +43,7 @@ public class hostToolKit {
 	}
 	
 	public static String recommendAmenity(Connection connection, String city) throws SQLException {
-		query = "SELECT * FROM listing,amenity WHERE listing.listingID=amenity.listingID";
+		query = "SELECT * FROM listing,amenities WHERE listing.listingID=amenities.listingID";
 		ResultSet data = DBAPI.getDataByQuery(connection, query);
 		
 		ArrayList<String> dining = new ArrayList<String>();
@@ -65,13 +65,13 @@ public class hostToolKit {
 			s = data.getString("facilities");
 			if (!s.equals(null) || !s.equals(""))
 				facilities.add(s);
-			s = data.getString("guessAccess");
+			s = data.getString("guestAccess");
 			if (!s.equals(null) || !s.equals(""))
 				guessAccess.add(s);
 			s = data.getString("logistics");
 			if (!s.equals(null) || !s.equals(""))
 				logistics.add(s);
-			s = data.getString("bedAnthBath");
+			s = data.getString("bedAndBath");
 			if (!s.equals(null) || !s.equals(""))
 				bedBath.add(s);
 			s = data.getString("outdoor");

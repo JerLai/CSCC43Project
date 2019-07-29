@@ -12,7 +12,6 @@ import main.CSCC43DatabaseProject;
 /**
  * Establishes the connection to the database
  * 
- * @author Jeremy Lai
  *
  */
 public class DBDriver {

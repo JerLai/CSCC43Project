@@ -14,7 +14,6 @@ import java.util.List;
  * DELETE, INSERT, ALTER for adding, removing, updating columns rows or tables
  * from a database
  * 
- * @author Jeremy Lai
  *
  */
 public class DBAPI {
